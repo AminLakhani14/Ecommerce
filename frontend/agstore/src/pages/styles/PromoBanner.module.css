@@ -1,0 +1,17 @@
+.bannerImage {
+    height: 400px;
+    object-fit: cover;
+    filter: brightness(0.6);
+  }
+  
+  .bannerOverlay {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 2rem 4rem;
+  }
+  
+  .bannerContent {
+    max-width: 50%;
+  }
