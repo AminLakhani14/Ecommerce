@@ -16,11 +16,13 @@ import upload from '../middleware/uploadMiddleware.js';
 router.route('/')
   .get(getProducts)
   .post(protect, admin, upload.array('gallery', 6), createProduct)
+  .put(protect, admin, updateProduct)
   .delete(protect, admin, deleteProduct); 
 
 router.get('/category/:categoryName', getProductsByCategory);
 router.get('/homepage', getHomepageProducts);
 router.get('/sale', getSaleProducts); //
 router.route('/:id').get(getProductById);
+
 
 export default router;

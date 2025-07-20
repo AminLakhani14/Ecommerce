@@ -3,6 +3,7 @@ import { apiSlice } from './slices/apiSlice';
 import cartSliceReducer from './slices/cartSlice';
 import authSliceReducer from './slices/authSlice';
 import productCreateReducer from './slices/productCreateSlice'; // <-- IMPORT THE NEW REDUCER
+import orderReducer from './slices/orderSlice'; // <-- IMPORT
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     cart: cartSliceReducer,
     auth: authSliceReducer,
     productCreate: productCreateReducer, // <-- ADD THE NEW REDUCER
+    order: orderReducer, // <-- ADD
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(apiSlice.middleware),

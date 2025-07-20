@@ -9,16 +9,27 @@ const ProductListPage = () => {
   const { data: products, isLoading, error, refetch } = useGetProductsQuery();
   const [deleteProduct, { isLoading: loadingDelete }] = useDeleteProductMutation();
 
+  // --- START: THIS IS THE FIX ---
+  // The handler is now an async function to properly await the API call.
   const deleteHandler = async (id) => {
+    // A confirmation dialog is a good practice.
     if (window.confirm('Are you sure you want to delete this product?')) {
       try {
-        await deleteProduct(id);
-        refetch(); // Refetch the product list
+        // We call the mutation and '.unwrap()' it.
+        // '.unwrap()' will throw an error if the API call fails.
+        await deleteProduct(id).unwrap();
+        
+        // After a successful deletion, we refetch the product list.
+        // This will cause the component to re-render with the updated list.
+        refetch();
+        alert('Product deleted successfully');
       } catch (err) {
-        alert(err?.data?.message || err.error);
+        // If unwrap throws an error, we catch it here and show an alert.
+        alert(err?.data?.message || err.error || 'Failed to delete product');
       }
     }
   };
+  // --- END: THIS IS THE FIX ---
 
   return (
     <>
@@ -30,25 +41,46 @@ const ProductListPage = () => {
           </LinkContainer>
         </Col>
       </Row>
+
+      {/* Show a loader specifically for the delete action */}
       {loadingDelete && <Loader />}
-      {isLoading ? <Loader /> : error ? <Message variant='danger'>{error.data.message}</Message> : (
+
+      {isLoading ? (
+        <Loader />
+      ) : error ? (
+        <Message variant='danger'>{error.data?.message || error.error}</Message>
+      ) : (
         <Table striped bordered hover responsive className='table-sm'>
           <thead>
             <tr>
-              <th>NAME</th><th>PRICE</th><th>CATEGORY</th><th></th>
+              <th>ID</th>
+              <th>NAME</th>
+              <th>PRICE</th>
+              <th>CATEGORY</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
             {products.map((product) => (
-              <tr key={product.name}>
+              <tr key={product._id}>
+                <td>{product._id}</td>
                 <td>{product.name}</td>
                 <td>PKR {product.price}</td>
                 <td>{product.category}</td>
                 <td>
                   <LinkContainer to={`/admin/product/${product._id}/edit`}>
-                    <Button variant='light' className='btn-sm mx-2'><FaEdit /></Button>
+                    <Button variant='light' className='btn-sm mx-2'>
+                      <FaEdit />
+                    </Button>
                   </LinkContainer>
-                  <Button variant='danger' className='btn-sm' onClick={() => deleteHandler(product._id)}><FaTrash /></Button>
+                  <Button
+                    variant='danger'
+                    className='btn-sm'
+                    onClick={() => deleteHandler(product._id)}
+                    disabled={loadingDelete} // Disable button during deletion
+                  >
+                    <FaTrash />
+                  </Button>
                 </td>
               </tr>
             ))}

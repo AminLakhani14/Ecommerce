@@ -26,5 +26,5 @@ const orderSchema = new mongoose.Schema({
   deliveredAt: { type: Date },
 }, { timestamps: true });
 
-const Order = mongoose.model('Order', orderSchema);
+const Order = mongoose.models.Order || mongoose.model('Order', orderSchema);
 export default Order;

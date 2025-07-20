@@ -2,7 +2,6 @@ import React from 'react';
 import { useGetHomepageProductsQuery } from '../redux/slices/productsApiSlice';
 import { Row, Col, Container } from 'react-bootstrap';
 import ProductCard from '../components/ProductCard';
-import Loader from '../components/Loader';
 import Message from '../components/Message';
 import Hero from '../components/Hero';
 import PromoBanner from '../components/PromoBanner'; // <-- Import new component
@@ -31,15 +30,13 @@ const ProductSection = ({ title, products, error }) => (
 
 
 const HomePage = () => {
-  const { data, isLoading, error } = useGetHomepageProductsQuery();
+  const { data } = useGetHomepageProductsQuery();
   
   console.log(data)
   return (
     <>
       <Hero />
       <Container>
-            <ProductSection title="Latest in Men's Fashion" products={data?.men} />
-
             <PromoBanner
               title="Sharp Styles for Men"
               text="Upgrade your wardrobe with our premium menswear."
@@ -47,9 +44,9 @@ const HomePage = () => {
               buttonText="Shop Men"
               linkTo="/category/Men"
             />
+            {data?.men && <ProductSection title="Latest in Men's Fashion" products={data?.men} />}
 
             {/* --- START: NEW PROMO BANNERS --- */}
-            {/* <ProductSection title="Top Picks for Women" products={data.women} /> */}
             <PromoBanner
               title="For The Modern Woman"
               text="Discover elegance and style in our new women's collection."
@@ -57,10 +54,12 @@ const HomePage = () => {
               buttonText="Shop Women"
               linkTo="/category/Women"
             />
+            {data?.women && <ProductSection title="Top Picks for Women" products={data?.women} />}
+
             {/* --- END: NEW PROMO BANNERS --- */}
 
             
-            {/* <ProductSection title="New for Children" products={data.children} /> */}
+            {data?.children && <ProductSection title="New for Children" products={data?.children} />}
             
             <PromoBanner
               title="Mid-Season Sale"
@@ -70,7 +69,7 @@ const HomePage = () => {
               linkTo="/category/Sale"
             />
             
-            {/* <ProductSection title="Hot Sale Items" products={data.sale} /> */}
+            {data?.sale && <ProductSection title="Hot Sale Items" products={data?.sale} />}
       </Container>
     </>
   );

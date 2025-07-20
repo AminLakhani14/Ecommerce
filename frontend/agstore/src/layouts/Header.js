@@ -22,6 +22,8 @@ const Header = () => {
     } catch (err) { console.error(err); }
   };
 
+  
+
   return (
     <header>
       <Navbar bg="light" variant="light" expand="lg" collapseOnSelect className="shadow-sm">
@@ -59,15 +61,15 @@ const Header = () => {
             </Nav>
             <Nav>       
             <LinkContainer to='/cart'>
-                <Nav.Link>
-                  <FaShoppingCart /> Cart
-                  {cartItems.length > 0 && (
-                    <Badge pill bg='success' style={{ marginLeft: '5px' }}>
-                      {cartItems.reduce((a, c) => a + c.qty, 0)}
-                    </Badge>
-                  )}
-                </Nav.Link>
-              </LinkContainer>
+              <Nav.Link>
+                <FaShoppingCart /> Cart
+                {cartItems.length > 0 && (
+                  <Badge pill bg='success' style={{ marginLeft: '5px' }}>
+                    {cartItems.reduce((a, c) => a + c.qty, 0)}
+                  </Badge>
+                )}
+              </Nav.Link>
+            </LinkContainer>
             </Nav>
           </Navbar.Collapse>
         </Container>

@@ -1,0 +1,47 @@
+/* Container for the counter and the Add to Cart button */
+.actionRow {
+    display: flex;
+    align-items: stretch; /* Make items the same height */
+    gap: 8px; /* Space between counter and button */
+  }
+  
+  /* The main wrapper for the counter itself */
+  .counterWrapper {
+    display: flex;
+    flex: 1; /* Allow it to take up available space */
+  }
+  
+  /* The numeric input display in the middle */
+  .qtyInput {
+    width: 45px !important; /* Fixed width */
+    text-align: center;
+    border-left: none !important;
+    border-right: none !important;
+    box-shadow: none !important; /* Remove focus glow */
+    padding: 0.375rem 0.2rem !important;
+    pointer-events: none; /* Make it non-editable */
+  }
+  
+  /* The '+' and '-' buttons */
+  .qtyButton {
+    width: 38px;
+    border: 1px solid #dee2e6; /* Standard Bootstrap border color */
+    background-color: #f8f9fa; /* Light background */
+    color: #212529; /* Dark text */
+    font-weight: bold;
+  }
+  
+  .qtyButton:hover {
+    background-color: #e9ecef; /* Slightly darker on hover */
+  }
+  
+  .qtyButton:disabled {
+    background-color: #f8f9fa;
+    color: #adb5bd; /* Lighter text when disabled */
+    cursor: not-allowed;
+  }
+  
+  /* Styling for the Add to Cart button to match */
+  .addToCartButton {
+    flex: 2; /* Make it wider than the counter */
+  }

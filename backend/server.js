@@ -8,6 +8,7 @@ import productRoutes from './routes/productRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import dotenv from 'dotenv';
 import connectDB from './config/db.js'
+import orderRoutes from './routes/orderRoutes.js'; 
 
 dotenv.config();
 connectDB();
@@ -30,6 +31,7 @@ app.use(passport.initialize());
 // API Routes
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/orders', orderRoutes); 
 
 // Make uploads folder static
 const __dirname = path.resolve();
