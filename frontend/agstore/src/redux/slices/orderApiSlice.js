@@ -19,6 +19,34 @@ export const orderApiSlice = apiSlice.injectEndpoints({
       keepUnusedDataFor: 5,
     }),
 
+    getMyOrders: builder.query({
+      query: () => ({
+        url: `/api/orders/myorders`,
+      }),
+      keepUnusedDataFor: 5,
+    }),
+
+    getOrders: builder.query({
+      query: () => ({
+        url: '/api/orders',
+      }),
+      providesTags: ['Order'], // Tagging for auto-refetch
+      keepUnusedDataFor: 5,
+    }),
+    deliverOrder: builder.mutation({
+      query: (orderId) => ({
+        url: `/api/orders/${orderId}/deliver`,
+        method: 'PUT',
+      }),
+      invalidatesTags: ['Order'], // Invalidate the order list on update
+    }),
+    cancelOrder: builder.mutation({
+      query: (orderId) => ({
+        url: `/api/orders/${orderId}/cancel`,
+        method: 'PUT',
+      }),
+      invalidatesTags: ['Order'], // Invalidate the order list
+    }),
     // This mutation will simulate the payment
     payOrder: builder.mutation({
       query: (orderId) => ({
@@ -33,4 +61,8 @@ export const {
   useCreateOrderMutation,
   useGetOrderDetailsQuery,
   usePayOrderMutation,
+  useGetMyOrdersQuery,
+  useGetOrdersQuery,
+  useDeliverOrderMutation,
+  useCancelOrderMutation, 
 } = orderApiSlice;

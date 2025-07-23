@@ -1,0 +1,52 @@
+.cartItem {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .cartItem:last-child {
+    border-bottom: none;
+  }
+  
+  .productImage {
+    width: 100px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 1.5rem;
+  }
+  
+  .productInfo {
+    flex-grow: 1;
+  }
+  
+  .productName {
+    font-weight: 600;
+    text-decoration: none;
+    color: #212529;
+    display: block;
+  }
+  
+  .productName:hover {
+    color: #007bff;
+  }
+  
+  .productDetails {
+    font-size: 0.9rem;
+    color: #6c757d;
+  }
+  
+  .productPrice {
+    font-weight: 500;
+    min-width: 100px;
+    text-align: right;
+  }
+  
+  .summaryCard {
+    position: sticky;
+    top: 20px; /* Makes the summary card stick to the top on scroll */
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+  }

@@ -1,0 +1,25 @@
+.sitemapWrapper {
+    background-color: #f8f9fa; /* A very light grey background */
+    padding: 3rem 0;
+    border-top: 1px solid #dee2e6;
+    border-bottom: 1px solid #dee2e6;
+  }
+  
+  .columnTitle {
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    color: #343a40;
+  }
+  
+  .sitemapLink {
+    text-decoration: none;
+    color: #6c757d; /* Muted text color */
+    font-size: 0.95rem;
+    transition: color 0.2s ease-in-out;
+  }
+  
+  .sitemapLink:hover {
+    color: #212529; /* Darker on hover */
+  }

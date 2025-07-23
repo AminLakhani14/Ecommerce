@@ -1,0 +1,43 @@
+.profileContainer {
+    background-color: #f8f9fa; /* Light grey background for the whole page */
+    padding: 2rem;
+    border-radius: 8px;
+  }
+  
+  .tabNav .nav-link {
+    border: none;
+    background-color: transparent;
+    color: #6c757d;
+    font-weight: 500;
+    border-radius: 8px !important; /* Override bootstrap */
+    margin-bottom: 0.5rem;
+    text-align: left;
+  }
+  
+  .tabNav .nav-link.active {
+    background-color: #007bff !important; /* Bootstrap primary blue */
+    color: white !important;
+  }
+  
+  .formWrapper {
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+  
+  .formLabel {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #495057;
+  }
+  
+  .formInput {
+    border-radius: 8px;
+  }
+  
+  .updateButton {
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+  }

@@ -1,26 +1,39 @@
 .hero {
-    /* background: url('../../assets/images/hero-bg.jpg') no-repeat center center/cover; */
-    height: 60vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    color: white;
-    margin-bottom: 2rem;
-    position: relative;
-  }
-  
-  .hero::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.4);
-  }
-  
-  .heroContent {
-    position: relative;
-    z-index: 2;
-  }
+  height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* --- START: THIS IS THE FIX --- */
+/* These styles replicate Bootstrap's container behavior */
+.heroContent {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+/* Media queries to set the max-width at different screen sizes */
+@media (min-width: 576px) { .heroContent { max-width: 540px; } }
+@media (min-width: 768px) { .heroContent { max-width: 720px; } }
+@media (min-width: 992px) { .heroContent { max-width: 960px; } }
+@media (min-width: 1200px) { .heroContent { max-width: 1140px; } }
+/* --- END: THIS IS THE FIX --- */

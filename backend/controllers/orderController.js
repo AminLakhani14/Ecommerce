@@ -6,31 +6,46 @@ import Product from '../models/productModel.js'; // <-- IMPORT PRODUCT MODEL
 // @access  Private
 const addOrderItems = async (req, res) => {
   try {
-    const { orderItems, shippingAddress, paymentMethod, itemsPrice, taxPrice, shippingPrice, totalPrice, email } = req.body;
+    const { orderItems, shippingAddress, paymentMethod, itemsPrice, taxPrice, shippingPrice, totalPrice } = req.body;
 
     if (!orderItems || orderItems.length === 0) {
       return res.status(400).json({ message: 'No order items' });
     }
 
+    for (const item of orderItems) {
+      if (!item.size) {
+        // This check is now on the ORIGINAL data from the frontend payload.
+        return res.status(400).json({ message: `Product "${item.name}" is missing a size in the payload.` });
+      }
+      const product = await Product.findById(item._id);
+      if (!product) {
+        return res.status(404).json({ message: `Product "${item.name}" not found.`});
+      }
+      const variant = product.variants.find(v => v.size === item.size);
+      if (!variant || variant.stock < item.qty) {
+        return res.status(400).json({ message: `Not enough stock for ${item.name} (Size: ${item.size}).` });
+      }
+    }
+
     const order = new Order({
-      orderItems: orderItems.map(x => ({ ...x, product: x._id, _id: undefined })),
       user: req.user._id,
+      // This map ONLY selects the fields needed for the order schema.
+      orderItems: orderItems.map(item => ({
+        name: item.name,
+        qty: item.qty,
+        image: item.image,
+        price: item.price,
+        size: item.size, // The 'size' is explicitly passed.
+        product: item._id,
+      })),
       shippingAddress,
       paymentMethod,
       itemsPrice,
-      taxPrice,
       shippingPrice,
+      taxPrice,
       totalPrice,
     });
-
-    for (const item of order.orderItems) {
-        const product = await Product.findById(item.product);
-        if (product) {
-          product.countInStock -= item.qty;
-          await product.save();
-        }
-      }
-
+    
     if (paymentMethod === 'Cash on Delivery') {
         order.isPaid = true;
         order.paidAt = Date.now();
@@ -38,7 +53,13 @@ const addOrderItems = async (req, res) => {
 
     const createdOrder = await order.save();
     
-    // --- SEND EMAIL LOGIC ---
+    for (const item of createdOrder.orderItems) {
+      await Product.updateOne(
+        { _id: item.product, 'variants.size': item.size },
+        { $inc: { 'variants.$.stock': -item.qty } }
+      );
+    }
+
     const emailHtml = `
       <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 20px;">
         <h1 style="color: #1a1a1a; text-align: center;">Thank You For Your Order!</h1>
@@ -74,35 +95,13 @@ const addOrderItems = async (req, res) => {
                 <td style="text-align: right; padding: 8px;">Shipping:</td>
                 <td style="text-align: right; padding: 8px;">PKR ${createdOrder.shippingPrice}</td>
               </tr>
-              <tr>
-                <td style="text-align: right; padding: 8px;">Tax:</td>
-                <td style="text-align: right; padding: 8px;">PKR ${createdOrder.taxPrice}</td>
-              </tr>
-              <tr style="font-weight: bold; font-size: 1.1em;">
+              <tr style="font-weight: bold; font-size: 1.1em; border-top: 2px solid #ddd;">
                 <td style="text-align: right; padding: 8px;">Total:</td>
                 <td style="text-align: right; padding: 8px;">PKR ${createdOrder.totalPrice}</td>
               </tr>
             </tfoot>
           </table>
         </div>
-
-        <div style="display: flex; justify-content: space-between;">
-            <div style="width: 48%;">
-                <h3 style="color: #1a1a1a;">Shipping To:</h3>
-                <p>
-                    ${shippingAddress.firstName} ${shippingAddress.lastName}<br>
-                    ${shippingAddress.address}<br>
-                    ${shippingAddress.city}, ${shippingAddress.state}<br>
-                    ${shippingAddress.postalCode}, ${shippingAddress.country}
-                </p>
-            </div>
-            <div style="width: 48%;">
-                <h3 style="color: #1a1a1a;">Payment Method:</h3>
-                <p>${createdOrder.paymentMethod}</p>
-            </div>
-        </div>
-
-        <p style="text-align: center; margin-top: 30px; color: #888;">Thank you for shopping at AG-Store!</p>
       </div>
     `;
 
@@ -158,25 +157,71 @@ const updateOrderToPaid = async (req, res) => {
 
 // This is a conceptual function for a future feature
 const cancelOrder = async (req, res) => {
+  try {
     const order = await Order.findById(req.params.id);
 
-    if (order && !order.isDelivered) { // Only non-delivered orders can be cancelled
-        // --- START: RESTOCK LOGIC ---
-        for (const item of order.orderItems) {
-            const product = await Product.findById(item.product);
-            if (product) {
-                product.countInStock += item.qty;
-                await product.save();
-            }
-        }
-        // --- END: RESTOCK LOGIC ---
+    if (order) {
+      if (order.isDelivered) {
+        return res.status(400).json({ message: 'Cannot cancel a delivered order.' });
+      }
 
-        order.isCancelled = true; // You would add an 'isCancelled' field to the model
-        await order.save();
-        res.json({ message: 'Order cancelled and items restocked.' });
+      // --- START: RESTOCK INVENTORY LOGIC ---
+      for (const item of order.orderItems) {
+        const product = await Product.findById(item.product);
+        if (product) {
+          product.countInStock += item.qty;
+          await product.save();
+        }
+      }
+      // --- END: RESTOCK INVENTORY LOGIC ---
+
+      order.isCancelled = true;
+      const updatedOrder = await order.save();
+      res.json(updatedOrder);
+
     } else {
-        res.status(404).json({ message: 'Order not found or cannot be cancelled.' });
+      res.status(404).json({ message: 'Order not found' });
     }
+  } catch (error) {
+    console.error('Error cancelling order:', error);
+    res.status(500).json({ message: 'Server error while cancelling order.' });
+  }
 };
 
-export { addOrderItems, getOrderById, updateOrderToPaid, cancelOrder };
+const getMyOrders = async (req, res) => {
+  const orders = await Order.find({ user: req.user._id });
+  res.json(orders);
+};
+
+const getOrders = async (req, res) => {
+  const orders = await Order.find({}).populate('user', 'id name');
+  res.json(orders);
+};
+
+const updateOrderToDelivered = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+
+    if (order) {
+      order.isDelivered = true;
+      order.deliveredAt = Date.now();
+      const updatedOrder = await order.save();
+      res.json(updatedOrder);
+    } else {
+      res.status(404).json({ message: 'Order not found' });
+    }
+  } catch(error) {
+      console.error("Error in deliver order:", error);
+      res.status(500).json({ message: "Server error" });
+  }
+};
+
+export {
+  addOrderItems,
+  getOrderById,
+  updateOrderToPaid,
+  getMyOrders,
+  getOrders,
+  updateOrderToDelivered,
+  cancelOrder,
+};

@@ -4,10 +4,12 @@ export const productsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getProducts: builder.query({
       query: () => ({ url: '/api/products' }),
+      providesTags: ['Product'],
       keepUnusedDataFor: 5,
     }),
     getProductDetails: builder.query({
       query: (productId) => ({ url: `/api/products/${productId}` }),
+      providesTags: (result, error, id) => [{ type: 'Product', id }],
       keepUnusedDataFor: 5,
     }),
     // --- START: ADDED NEW ENDPOINTS ---
@@ -21,13 +23,14 @@ export const productsApiSlice = apiSlice.injectEndpoints({
     }),
     getHomepageProducts: builder.query({
       query: () => ({ url: '/api/products/homepage' }),
+      providesTags: ['Product'],
       keepUnusedDataFor: 5,
     }),
     getProductsByCategory: builder.query({
       query: (categoryName) => ({
         url: `/api/products/category/${categoryName}`,
       }),
-      providesTags: (result, error, categoryName) => [{ type: 'Product', id: categoryName }],
+      providesTags: ['Product'],
     }),
     updateProduct: builder.mutation({
       query: (data) => ({
@@ -48,6 +51,18 @@ export const productsApiSlice = apiSlice.injectEndpoints({
       query: () => ({ url: '/api/products/sale' }),
       providesTags: ['Product'],
     }),
+    getProductsBySubCategory: builder.query({
+      query: (subCategoryName) => ({
+        url: `/api/products/subcategory/${encodeURIComponent(subCategoryName)}`,
+      }),
+      providesTags: ['Product'],
+    }),
+    getProductsByFilter: builder.query({
+      query: ({ category, subCategory }) => ({
+        url: `/api/products/filter/${encodeURIComponent(category)}/${encodeURIComponent(subCategory)}`,
+      }),
+      providesTags: ['Product'],
+    }),
     // --- END: ADDED NEW ENDPOINTS ---
   }),
 });
@@ -62,4 +77,6 @@ export const {
   useGetHomepageProductsQuery,
   useGetProductsByCategoryQuery,
   useGetSaleProductsQuery,
+  useGetProductsBySubCategoryQuery,
+  useGetProductsByFilterQuery, 
 } = productsApiSlice;

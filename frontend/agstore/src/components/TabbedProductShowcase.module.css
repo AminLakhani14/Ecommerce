@@ -1,0 +1,21 @@
+.tabWrapper {
+    display: inline-flex;
+    border: 1px solid #ccc;
+    border-radius: 50px; /* Pill shape for the container */
+    overflow: hidden;
+  }
+  
+  .tabButton {
+    background-color: transparent;
+    border: none;
+    padding: 10px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+    color: #555;
+  }
+  
+  .tabButton.active {
+    background-color: #1a1a1a;
+    color: #ffffff;
+  }

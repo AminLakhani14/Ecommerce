@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../components/Loader';
 import { useLoginMutation } from '../redux/slices/usersApiSlice';
 import { setCredentials } from '../redux/slices/authSlice';
-import { FaGoogle } from 'react-icons/fa';
+// import { FaGoogle } from 'react-icons/fa';
 import styles from './styles/Auth.module.css';
 
 const LoginPage = () => {
@@ -31,9 +31,9 @@ const LoginPage = () => {
         } catch (err) { alert(err?.data?.message || err.error); }
     };
 
-    const googleAuthHandler = () => {
-        window.location.href = `/api/users/auth/google`;
-    };
+    // const googleAuthHandler = () => {
+    //     window.location.href = `/api/users/auth/google`;
+    // };
 
     return (
         <div className={styles.authContainer}>
@@ -55,13 +55,13 @@ const LoginPage = () => {
 
                     <div className={styles.divider}><span>OR</span></div>
                     
-                    <Button variant="outline-danger" className="w-100 mb-2" onClick={googleAuthHandler}>
+                    {/* <Button variant="outline-danger" className="w-100 mb-2" onClick={googleAuthHandler}>
                         <FaGoogle /> Continue with Google
-                    </Button>
+                    </Button> */}
                     
                     <Row className='py-3'>
                         <Col className="text-center">
-                            New Customer?{' '}<Link to={redirect ? `/register?redirect=${redirect}` : '/register'}>Register</Link>
+                            New Customer?{' '}<Link to={redirect ? `/register?redirect=${redirect}` : '/login'}>Register</Link>
                         </Col>
                     </Row>
                 </Card.Body>

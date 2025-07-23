@@ -1,17 +1,43 @@
 .bannerImage {
-    height: 400px;
-    object-fit: cover;
-    filter: brightness(0.6);
-  }
-  
-  .bannerOverlay {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 2rem 4rem;
-  }
-  
-  .bannerContent {
-    max-width: 50%;
-  }
+  height: 600px;
+  object-fit: cover;
+  filter: brightness(0.6);
+}
+
+.bannerOverlay {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Horizontally center the content wrapper */
+  text-align: center; /* Center the text inside the content block */
+}
+
+/* This is the container-like wrapper for our content */
+.bannerContentWrapper {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+/* Media queries for max-width of the content wrapper */
+@media (min-width: 576px) { .bannerContentWrapper { max-width: 540px; } }
+@media (min-width: 768px) { .bannerContentWrapper { max-width: 720px; } }
+@media (min-width: 992px) { .bannerContentWrapper { max-width: 960px; } }
+@media (min-width: 1200px) { .bannerContentWrapper { max-width: 1140px; } }
+
+/* --- START: THIS IS THE FIX --- */
+/* The actual content block (text and buttons) */
+.bannerContent {
+  /* Remove the max-width to allow the content to center properly */
+  /* max-width: 50%; <-- DELETE OR COMMENT OUT THIS LINE */
+}
+
+/* New style for the button group */
+.buttonGroup {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem; /* Adds space between the buttons */
+}
+/* --- END: THIS IS THE FIX --- */

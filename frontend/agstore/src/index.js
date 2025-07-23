@@ -28,6 +28,11 @@ import SalePage from './pages/SalePage';
 import ProductListPage from './pages/Admin/ProductListPage';
 import ProductCreatePage from './pages/Admin/ProductCreatePage';
 import ProductEditPage from './pages/Admin/ProductEditPage';
+import SubCategoryPage from './pages/SubCategoryPage'; 
+import FilteredProductPage from './pages/FilteredProductPage';
+import ProfilePage from './pages/ProfilePage';
+import OrderListPage from './pages/Admin/OrderListPage';
+import FAQPage from './pages/FAQ';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -39,12 +44,14 @@ const router = createBrowserRouter(
       <Route path='/login' element={<LoginPage />} />
       <Route path='/register' element={<RegisterPage />} />
       <Route path='/about' element={<AboutPage />} />
+      <Route path='/faq' element={<FAQPage />} />
       <Route path='/contact' element={<ContactPage />} />
       <Route path='/category/:categoryName' element={<CategoryPage />} />
       <Route path='/sale' element={<SalePage />} />
       <Route path='/thankyou' element={<ThankYouPage />} />
-      
-      {/* --- Protected Routes (Must be logged in) --- */}
+      <Route path='/profile' element={<ProfilePage />} />
+      <Route path='/products/subcategory/:subCategoryName' element={<SubCategoryPage />} />
+      <Route path='/products/:category/:subCategory' element={<FilteredProductPage />} />
       <Route path='' element={<PrivateRoute />}>
         <Route path='/shipping' element={<ShippingPage />} />
         <Route path='/order/:id' element={<OrderPage />} />
@@ -56,6 +63,7 @@ const router = createBrowserRouter(
         <Route path='/admin/productlist' element={<ProductListPage />} />
         <Route path='/admin/product/create' element={<ProductCreatePage />} />
         <Route path='/admin/product/:id/edit' element={<ProductEditPage />} />
+        <Route path='/admin/orderlist' element={<OrderListPage />} /> 
       </Route>
     </Route>
   )

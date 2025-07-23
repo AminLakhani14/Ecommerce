@@ -1,0 +1,55 @@
+.showcaseCard {
+    position: relative;
+    display: block;
+    overflow: hidden; /* This is key for the zoom effect and cropping */
+    text-decoration: none;
+    border-radius: 8px; /* Optional: adds slightly rounded corners */
+    
+    /* --- START: THIS IS THE FIX --- */
+    /* We are forcing every card to have a 3:4 aspect ratio (taller than it is wide) */
+    aspect-ratio: 3 / 4; 
+    /* --- END: THIS IS THE FIX --- */
+  }
+  
+  .showcaseImage {
+    /* --- START: THIS IS THE FIX --- */
+    /* These properties make the image fill the container perfectly */
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* This is the magic part: it scales and crops the image to fit */
+    /* --- END: THIS IS THE FIX --- */
+    
+    display: block;
+    transition: transform 0.4s ease-in-out; /* Smooth zoom transition */
+  }
+  
+  .showcaseCard:hover .showcaseImage {
+    transform: scale(1.05); /* Zoom in on hover */
+  }
+  
+  .buttonWrapper {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+  }
+  
+  .showcaseButton {
+    background-color: #1a1a1a;
+    color: #ffffff;
+    border: 1px solid #1a1a1a;
+    padding: 12px 24px;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    border-radius: 50px; /* Pill shape */
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    white-space: nowrap; /* Prevent button text from wrapping */
+  }
+  
+  .showcaseCard:hover .showcaseButton {
+    background-color: #ffffff;
+    color: #1a1a1a;
+  }

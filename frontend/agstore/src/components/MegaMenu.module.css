@@ -1,0 +1,60 @@
+.megaMenuWrapper {
+    position: absolute;
+    top: 100%; /* Position it right below the header */
+    left: 0;
+    width: 100%;
+    background-color: #ffffff;
+    border-top: 1px solid #e5e5e5;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 2rem 0;
+    z-index: 1000; /* Ensure it's above other content */
+  }
+  
+  .menuColumn h5 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  
+  .menuColumn ul li {
+    margin-bottom: 0.75rem;
+  }
+  
+  .menuColumn a {
+    text-decoration: none;
+    color: #555;
+    font-size: 0.9rem;
+    transition: color 0.2s ease-in-out;
+  }
+  
+  .menuColumn a:hover {
+    color: #000;
+  }
+  
+  .featuredItem {
+    position: relative;
+    display: block;
+    margin-bottom: 1rem;
+    overflow: hidden;
+  }
+  
+  .featuredItem img {
+    transition: transform 0.3s ease;
+  }
+  
+  .featuredItem:hover img {
+    transform: scale(1.05);
+  }
+  
+  .featuredTitle {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-radius: 3px;
+  }

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 const Footer = () => {
   const currentYear = new Date().getFullYear();
   return (
-    <footer className="bg-dark text-white mt-5 p-4">
+    <footer className="bg-dark text-white p-4">
       <Container>
         <Row>
           <Col md={4} className="mb-3">

@@ -3,8 +3,8 @@ export const updateCart = (state) => {
       state.cartItems.reduce((acc, item) => acc + item.price * item.qty, 0).toFixed(2)
     );
   
-    state.shippingPrice = state.itemsPrice > 5000 ? 0 : 250;
-    state.taxPrice = Number((0.15 * state.itemsPrice).toFixed(2));
+    state.shippingPrice = state.itemsPrice > 5000 ? 0 : 200;
+    state.taxPrice = 0;
   
     state.totalPrice = (
       state.itemsPrice +

@@ -1,0 +1,66 @@
+/* Styling for mobile-first order cards */
+.orderCard {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    padding: 1rem;
+  }
+  
+  .cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .orderId {
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: #495057;
+  }
+  
+  .orderDate {
+    font-size: 0.8rem;
+    color: #6c757d;
+  }
+  
+  .cardBody {
+    font-size: 0.95rem;
+  }
+  
+  .cardBody strong {
+    color: #343a40;
+  }
+  
+  .cardActions {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap; /* Allow buttons to wrap on very small screens */
+    gap: 0.5rem; /* Space between buttons */
+  }
+  
+  /* Custom badge for paid status */
+  .statusBadge {
+    display: inline-block;
+    padding: 0.25em 0.6em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25rem;
+    margin-left: 8px;
+  }
+  
+  .statusPaid {
+    color: #fff;
+    background-color: #28a745; /* Green */
+  }
+  
+  .statusNotPaid {
+    color: #fff;
+    background-color: #dc3545; /* Red */
+  }

@@ -1,0 +1,96 @@
+/* Main card container. We use flexbox to control the layout perfectly. */
+.card {
+  border: none;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* This is crucial for making all cards in a row the same height */
+}
+
+.imageWrapper {
+  position: relative;
+  overflow: hidden;
+  background-color: #f5f5f5; /* Light grey background for consistency */
+  aspect-ratio: 3 / 4; /* Ensures all image containers have the same shape */
+}
+
+.productImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Scales and crops image to fill the container */
+  transition: opacity 0.3s ease;
+}
+
+/* On-hover size selector */
+.sizeSelector {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap; /* Allows sizes to wrap to the next line if needed */
+  gap: 8px;
+  transform: translateY(100%); /* Start hidden below the card */
+  transition: transform 0.3s ease;
+  z-index: 2;
+}
+
+.card:hover .sizeSelector {
+  transform: translateY(0); /* Slide in on hover */
+}
+
+.card:hover .productImage {
+  opacity: 0.8; /* Slightly fade image on hover */
+}
+
+.sizeButton {
+  border: 1px solid #ccc;
+  background-color: white;
+  padding: 5px 10px;
+  cursor: pointer;
+  min-width: 40px;
+  text-align: center;
+  font-size: 0.8rem;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.sizeButton.selected {
+  background-color: #1a1a1a;
+  color: white;
+  border-color: #1a1a1a;
+}
+
+/* Wrapper for text content below the image */
+.infoWrapper {
+  padding-top: 15px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; /* This makes the info wrapper take up remaining space */
+}
+
+.productName {
+  font-weight: 600;
+  color: #1a1a1a;
+  text-decoration: none;
+  margin-bottom: 4px;
+}
+
+.subCategory {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.price {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+}
+
+/* This pushes the action buttons to the bottom of the card */
+.actionWrapper {
+  margin-top: auto;
+}

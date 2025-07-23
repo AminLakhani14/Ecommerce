@@ -1,0 +1,52 @@
+.formSection {
+  margin-bottom: 2.5rem;
+}
+
+.formLabel {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.paymentOption {
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.paymentOption:hover {
+  border-color: #adb5bd;
+}
+
+.paymentOption.selected {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.summaryCard {
+  background-color: #f8f9fa !important;
+  border: none !important;
+  border-radius: 8px;
+  position: sticky;
+  top: 20px;
+}
+
+.summaryItem {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.summaryItem:last-child {
+  border-bottom: none;
+}
+
+.summaryTotal {
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding-top: 1rem;
+  border-top: 2px solid #dee2e6;
+}

@@ -1,22 +1,24 @@
 import React from 'react';
-import { Container, Button } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import styles from '../pages/styles/Hero.module.css';
-// import heroImage from '../assets/images/hero-bg.jpg'; 
 
 const Hero = () => {
   return (
-    // Apply the background image via inline style
-    <div
-    //  className={styles.hero} style={{ backgroundImage: `url(${heroImage})` }}
+    // The outer div IS the full-width background
+    <div className={styles.hero} 
+    style={{ backgroundImage: `url(${'https://assets.vogue.com/photos/6324cbb0563d9de75791b508/master/w_1920,c_limit/___collage_story.jpg'})` }}
     >
-      <Container className={styles.heroContent}>
-        <h1 className="display-3">New Season Arrivals</h1>
-        <p className="lead">Check out all the new trends for this season</p>
-        <LinkContainer to="/category/sale">
+      {/* --- START: THIS IS THE FIX --- */}
+      {/* We use a standard div with a custom class for the centered content, INSTEAD of a Bootstrap <Container> */}
+      <div className={styles.heroContent}>
+        <h1 className="display-3 text-white">New Season Arrivals</h1>
+        <p className="lead text-white">Check out all the new trends for this season</p>
+        <LinkContainer to="/sale">
           <Button variant="dark" size="lg">Shop Now</Button>
         </LinkContainer>
-      </Container>
+      </div>
+      {/* --- END: THIS IS THE FIX --- */}
     </div>
   );
 };

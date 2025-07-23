@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Form, Button, Card } from 'react-bootstrap';
+import { Form, Button, Card, Row, Col } from 'react-bootstrap';
 import { useGetProductDetailsQuery, useUpdateProductMutation } from '../../redux/slices/productsApiSlice';
 import Loader from '../../components/Loader';
 import Message from '../../components/Message';
 import FormContainer from '../../components/FormContainer';
+import { FaPlus, FaTrash } from 'react-icons/fa';
 
 const ProductEditPage = () => {
     const { id: productId } = useParams();
@@ -15,15 +16,36 @@ const ProductEditPage = () => {
     const [price, setPrice] = useState(0);
     const [description, setDescription] = useState('');
     const [category, setCategory] = useState('Men');
-    const [subCategory, setSubCategory] = useState('');
+    const [subCategory, setSubCategory] = useState('Perfume');
     const [countInStock, setCountInStock] = useState(0);
     const [isOnSale, setIsOnSale] = useState(false);
+    const [variants, setVariants] = useState([{ size: '', stock: 0 }]);
 
+    const subCategoryOptions = [
+        'Perfume', 'T-shirt', 'Shoes', 'Bags', 
+        'Underwear & Basics', 'Jackets', 'Cargo Pants', 'Shorts'
+    ];
     // Get the product data using its ID
     const { data: product, isLoading, error: fetchError } = useGetProductDetailsQuery(productId);
     
     // Get the mutation hook for updating
     const [updateProduct, { isLoading: loadingUpdate, error: updateError }] = useUpdateProductMutation();
+
+    
+    const handleVariantChange = (index, field, value) => {
+        const newVariants = [...variants];
+        newVariants[index][field] = value;
+        setVariants(newVariants);
+    };
+    
+    const addVariant = () => {
+        setVariants([...variants, { size: '', stock: 0 }]);
+    };
+
+    const removeVariant = (index) => {
+        const newVariants = variants.filter((_, i) => i !== index);
+        setVariants(newVariants);
+    };
 
     // useEffect to populate the form once the product data is fetched
     useEffect(() => {
@@ -33,31 +55,33 @@ const ProductEditPage = () => {
             setDescription(product.description);
             setCategory(product.category);
             setSubCategory(product.subCategory);
-            setCountInStock(product.countInStock);
             setIsOnSale(product.isOnSale);
+            setVariants(product.variants.length > 0 ? product.variants : [{ size: '', stock: 0 }]);
         }
     }, [product]);
 
     const submitHandler = async (e) => {
         e.preventDefault();
         try {
-            await updateProduct({ 
-                productId, 
-                name, 
-                price, 
-                description, 
-                category, 
-                subCategory, 
-                countInStock, 
-                isOnSale 
-            }).unwrap();
-            
-            alert('Product updated successfully');
-            navigate('/admin/productlist');
+          const updatedProductData = {
+            productId, // This is used by RTK Query to build the URL
+            name,
+            price,
+            description,
+            category,
+            subCategory,
+            isOnSale,
+            variants, // This is the body of the request
+          };
+    
+          await updateProduct(updatedProductData).unwrap();
+          
+          alert('Product updated successfully');
+          navigate('/admin/productlist');
         } catch (err) {
-            alert(err?.data?.message || err.error);
+          alert(err?.data?.message || err.error || 'Failed to update product.');
         }
-    };
+      };
 
     return (
         <>
@@ -91,13 +115,19 @@ const ProductEditPage = () => {
                                     <option value="Men">Men</option>
                                     <option value="Women">Women</option>
                                     <option value="Children">Children</option>
+                                    <option value="Accessories">Accessories</option>
                                 </Form.Select>
                             </Form.Group>
 
                             <Form.Group controlId='subCategory' className='my-3'>
                                 <Form.Label>Sub-Category</Form.Label>
-                                <Form.Control type='text' value={subCategory} onChange={(e) => setSubCategory(e.target.value)} required />
+                                <Form.Select value={subCategory} onChange={(e) => setSubCategory(e.target.value)}>
+                                    {subCategoryOptions.map(option => (
+                                        <option key={option} value={option}>{option}</option>
+                                    ))}
+                                </Form.Select>
                             </Form.Group>
+
 
                             <Form.Group controlId='price' className='my-3'>
                                 <Form.Label>Price</Form.Label>
@@ -107,6 +137,28 @@ const ProductEditPage = () => {
                             <Form.Group controlId='countInStock' className='my-3'>
                                 <Form.Label>Count In Stock</Form.Label>
                                 <Form.Control type='number' value={countInStock} onChange={(e) => setCountInStock(e.target.value)} required />
+                            </Form.Group> 
+
+                            <Form.Group controlId='variants' className='my-4 p-3 border rounded'>
+                                <Form.Label className="fw-bold">Variants (Size & Stock)</Form.Label>
+                                {variants.map((variant, index) => (
+                                    <Row key={index} className="mb-2 align-items-center">
+                                        <Col>
+                                            <Form.Control type='text' placeholder="Size (e.g., M, 100ml, 42)" value={variant.size} onChange={(e) => handleVariantChange(index, 'size', e.target.value)} required />
+                                        </Col>
+                                        <Col>
+                                            <Form.Control type='number' placeholder="Stock" value={variant.stock} onChange={(e) => handleVariantChange(index, 'stock', Number(e.target.value))} required />
+                                        </Col>
+                                        <Col xs="auto">
+                                            <Button variant="danger" onClick={() => removeVariant(index)} disabled={variants.length === 1}>
+                                                <FaTrash />
+                                            </Button>
+                                        </Col>
+                                    </Row>
+                                ))}
+                                <Button variant="outline-primary" onClick={addVariant} className="mt-2">
+                                    <FaPlus /> Add Variant
+                                </Button>
                             </Form.Group>
 
                             <Form.Group controlId='isOnSale' className='my-3'>
