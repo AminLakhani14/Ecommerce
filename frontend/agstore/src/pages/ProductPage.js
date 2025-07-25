@@ -12,7 +12,7 @@ const ProductPage = () => {
     const { id: productId } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const serverUrl = 'http://localhost:5000';
+    const serverUrl = 'https://ecommerce-backend-production-f46e.up.railway.app';
 
     const [qty, setQty] = useState(1);
     const [selectedSize, setSelectedSize] = useState(null);

@@ -7,7 +7,7 @@ import styles from './ProductCard.module.css';
 import QuantityCounter from './QuantityCounter';
 
 const ProductCard = ({ product }) => {
-  const serverUrl = 'http://localhost:5000';
+  const serverUrl = 'https://ecommerce-backend-production-f46e.up.railway.app';
   const dispatch = useDispatch();
   const [selectedSize, setSelectedSize] = useState(null);
   const [qty, setQty] = useState(1);

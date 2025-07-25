@@ -7,7 +7,7 @@ import jazzcashLogo from '../assets/images/jazzcash.png';
 
 const OrderPage = () => {
   const { id: orderId } = useParams();
-  const serverUrl = 'http://localhost:5000';
+  const serverUrl = 'https://ecommerce-backend-production-f46e.up.railway.app';
 
   const { data: order, refetch, isLoading, error } = useGetOrderDetailsQuery(orderId);
   const [payOrder, { isLoading: loadingPay }] = usePayOrderMutation();

@@ -1,10 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
+const BASE_URL = 'https://ecommerce-backend-production-f46e.up.railway.app';
+
 const baseQuery = fetchBaseQuery({ 
-  baseUrl: '', // Proxy will handle the domain
-  credentials: 'include', // Include cookies for authentication
+  baseUrl: BASE_URL, 
+  credentials: 'include',
   prepareHeaders: (headers) => {
-    // Add any custom headers if needed
     return headers;
   },
 });
@@ -16,7 +17,6 @@ const baseQueryWithErrorHandling = async (args, api, extraOptions) => {
     return result;
   } catch (error) {
     console.error('API Error:', error);
-    // Return a structured error response
     return {
       error: {
         status: 'FETCH_ERROR',

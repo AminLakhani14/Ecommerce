@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Form, Button, Col, Row, ListGroup, Image, Card, Container } from 'react-bootstrap';
+import { Form, Button, Col, Row, Image, Card, Container } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { saveShippingAddress } from '../redux/slices/cartSlice';
 import { useCreateOrderMutation } from '../redux/slices/orderApiSlice';
 import { clearCartItems } from '../redux/slices/cartSlice';
-import CheckoutSteps from '../components/CheckoutSteps';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
 import styles from './styles/ShippingPage.module.css'; // <-- Import the new stylesheet
@@ -13,7 +12,7 @@ import styles from './styles/ShippingPage.module.css'; // <-- Import the new sty
 const ShippingPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const serverUrl = 'http://localhost:5000';
+  const serverUrl = 'https://ecommerce-backend-production-f46e.up.railway.app';
 
   const cart = useSelector((state) => state.cart);
   const { shippingAddress, cartItems } = cart;
@@ -26,7 +25,6 @@ const ShippingPage = () => {
   const [state, setState] = useState(shippingAddress?.state || 'Sindh');
   const [postalCode, setPostalCode] = useState('');
   const [phone, setPhone] = useState('');
-  const [errorMessage, setErrorMessage] = useState(null);
 
   const paymentMethod = 'Cash on Delivery'; // Fixed as per previous request
 
@@ -40,7 +38,6 @@ const ShippingPage = () => {
   
   const placeOrderHandler = async (e) => {
     e.preventDefault();
-    setErrorMessage(null);
     try {
       const fullShippingAddress = { email, firstName, lastName, phone, address, city, state, postalCode, country: 'Pakistan' };
       dispatch(saveShippingAddress(fullShippingAddress));
@@ -58,7 +55,6 @@ const ShippingPage = () => {
       dispatch(clearCartItems());
       navigate(`/order/${res._id}/thankyou`);
     } catch (err) {
-      setErrorMessage(err.data?.message || err.error || 'An unexpected error occurred.');
       alert(err.data?.message || err.error || 'An unexpected error occurred.');
     }
   };

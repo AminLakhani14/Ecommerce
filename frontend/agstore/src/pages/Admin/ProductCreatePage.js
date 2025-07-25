@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Form, Button, Card, Row, Col } from 'react-bootstrap';
 import { useCreateProductMutation } from '../../redux/slices/productsApiSlice';

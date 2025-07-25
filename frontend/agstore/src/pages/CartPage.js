@@ -10,7 +10,7 @@ import styles from './styles/CartPage.module.css';
 const CartPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const serverUrl = 'http://localhost:5000';
+  const serverUrl = 'https://ecommerce-backend-production-f46e.up.railway.app';
 
   const cart = useSelector((state) => state.cart);
   const { cartItems } = cart;

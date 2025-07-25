@@ -85,7 +85,7 @@ const Header = () => {
         <Container>
           <LinkContainer to='/' onClick={closeAllMenus}>
             <Navbar.Brand>
-              {/* <img src={logo} alt='AG-Store' style={{ height: '40px', marginRight: '10px' }} /> */}
+              {/* <img src={logo} alt='AG-Store' style={{ height: '40px', marginRight: '10px' }} />  */}
               <strong>AG-Store</strong>
             </Navbar.Brand>
           </LinkContainer>

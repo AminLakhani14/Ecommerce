@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Container, Row, Col, Button, ButtonGroup } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 import { useGetSaleProductsQuery } from '../redux/slices/productsApiSlice';
 import ProductCard from '../components/ProductCard';
 import Loader from '../components/Loader';
@@ -8,13 +8,12 @@ import Message from '../components/Message';
 const SalePage = () => {
   const { data: saleProducts, isLoading, error } = useGetSaleProductsQuery();
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [activeFilter, setActiveFilter] = useState('All');
 
   useEffect(() => {
     if (saleProducts) {
         setFilteredProducts(saleProducts);
     }
-  }, [saleProducts, activeFilter]);
+  }, [saleProducts]);
 
   return (
     <Container className="my-5">
