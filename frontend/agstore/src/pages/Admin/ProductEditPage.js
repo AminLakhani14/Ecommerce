@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Form, Button, Card, Row, Col } from 'react-bootstrap';
+import { Form, Button, Card, Row, Col, Image } from 'react-bootstrap';
 import { useGetProductDetailsQuery, useUpdateProductMutation } from '../../redux/slices/productsApiSlice';
 import Loader from '../../components/Loader';
 import Message from '../../components/Message';
 import FormContainer from '../../components/FormContainer';
+import MessageModal from '../../components/MessageModal';
 import { FaPlus, FaTrash } from 'react-icons/fa';
 
 const ProductEditPage = () => {
@@ -20,6 +21,8 @@ const ProductEditPage = () => {
     const [countInStock, setCountInStock] = useState(0);
     const [isOnSale, setIsOnSale] = useState(false);
     const [variants, setVariants] = useState([{ size: '', stock: 0 }]);
+    const [gallery, setGallery] = useState([]);
+    const [existingImages, setExistingImages] = useState([]);
 
     const subCategoryOptions = [
         'Perfume', 'T-shirt', 'Shoes', 'Bags', 
@@ -30,6 +33,25 @@ const ProductEditPage = () => {
     
     // Get the mutation hook for updating
     const [updateProduct, { isLoading: loadingUpdate, error: updateError }] = useUpdateProductMutation();
+
+    const [modalShow, setModalShow] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
+    const [modalTitle, setModalTitle] = useState('');
+    const [isSuccess, setIsSuccess] = useState(false);
+
+    const showModal = (title, message, success = false) => {
+        setModalTitle(title);
+        setModalMessage(message);
+        setIsSuccess(success);
+        setModalShow(true);
+    };
+
+    const handleModalClose = () => {
+        setModalShow(false);
+        if (isSuccess) {
+            navigate('/admin/productlist');
+        }
+    };
 
     
     const handleVariantChange = (index, field, value) => {
@@ -57,29 +79,38 @@ const ProductEditPage = () => {
             setSubCategory(product.subCategory);
             setIsOnSale(product.isOnSale);
             setVariants(product.variants.length > 0 ? product.variants : [{ size: '', stock: 0 }]);
+            setExistingImages([product.image, ...product.gallery].filter(Boolean));
         }
     }, [product]);
 
+    const serverUrl = 'http://localhost:5000'; // Define the base server URL for images
+
     const submitHandler = async (e) => {
         e.preventDefault();
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('price', price);
+        formData.append('description', description);
+        formData.append('category', category);
+        formData.append('subCategory', subCategory);
+        formData.append('countInStock', countInStock);
+        formData.append('isOnSale', isOnSale);
+        formData.append('variants', JSON.stringify(variants));
+
+        if (gallery && gallery.length > 0) {
+            for (let i = 0; i < gallery.length; i++) {
+                formData.append('gallery', gallery[i]);
+            }
+        }
+
         try {
-          const updatedProductData = {
-            productId, // This is used by RTK Query to build the URL
-            name,
-            price,
-            description,
-            category,
-            subCategory,
-            isOnSale,
-            variants, // This is the body of the request
-          };
-    
-          await updateProduct(updatedProductData).unwrap();
-          
-          alert('Product updated successfully');
-          navigate('/admin/productlist');
+          // RTK Query typically sends JSON by default.
+          // Note: updateProduct might need to be adjusted or use raw Fetch/Axios 
+          // if your productsApiSlice.js expects a clean object ID.
+          await updateProduct({ productId, formData }).unwrap();
+          showModal('Success', 'Product updated successfully', true);
         } catch (err) {
-          alert(err?.data?.message || err.error || 'Failed to update product.');
+          showModal('Error', err?.data?.message || err.error || 'Failed to update product.');
         }
       };
 
@@ -156,7 +187,7 @@ const ProductEditPage = () => {
                                         </Col>
                                     </Row>
                                 ))}
-                                <Button variant="outline-primary" onClick={addVariant} className="mt-2">
+                                <Button variant="outline-dark" onClick={addVariant} className="mt-2">
                                     <FaPlus /> Add Variant
                                 </Button>
                             </Form.Group>
@@ -164,15 +195,36 @@ const ProductEditPage = () => {
                             <Form.Group controlId='isOnSale' className='my-3'>
                                 <Form.Check type='checkbox' label='On Sale' checked={isOnSale} onChange={(e) => setIsOnSale(e.target.checked)} />
                             </Form.Group>
+
+                            <Form.Group controlId='existingImages' className='my-3'>
+                                <Form.Label>Current Images</Form.Label>
+                                <div className="d-flex flex-wrap gap-2">
+                                    {existingImages.map((img, index) => (
+                                        <Image key={index} src={`${serverUrl}${img}`} thumbnail style={{ width: '80px', height: '80px', objectFit: 'cover' }} />
+                                    ))}
+                                </div>
+                            </Form.Group>
+
+                            <Form.Group controlId='gallery' className='my-3'>
+                                <Form.Label>Change Images (Replace All)</Form.Label>
+                                <Form.Control type='file' multiple onChange={(e) => setGallery(e.target.files)} />
+                                <Form.Text className="text-muted small">Choosing new images will replace existing ones.</Form.Text>
+                            </Form.Group>
                             {/* --- END: ALL FORM FIELDS --- */}
 
-                            <Button type='submit' variant='primary' className="w-100 mt-3" disabled={loadingUpdate}>
+                            <Button type='submit' variant='dark' className="w-100 mt-3" disabled={loadingUpdate}>
                                 Update
                             </Button>
                         </Form>
                     )}
                 </Card>
             </FormContainer>
+            <MessageModal
+                show={modalShow}
+                onHide={handleModalClose}
+                title={modalTitle}
+                message={modalMessage}
+            />
         </>
     );
 };

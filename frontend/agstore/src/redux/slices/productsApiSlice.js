@@ -36,7 +36,7 @@ export const productsApiSlice = apiSlice.injectEndpoints({
       query: (data) => ({
         url: `/api/products/${data.productId}`,
         method: 'PUT',
-        body: data,
+        body: data.formData,
       }),
       invalidatesTags: ['Product'],
     }),

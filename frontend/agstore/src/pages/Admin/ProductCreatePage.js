@@ -5,6 +5,7 @@ import { useCreateProductMutation } from '../../redux/slices/productsApiSlice';
 import Loader from '../../components/Loader';
 import Message from '../../components/Message';
 import FormContainer from '../../components/FormContainer';
+import MessageModal from '../../components/MessageModal';
 
 const ProductCreatePage = () => {
     // State for all product fields
@@ -26,6 +27,25 @@ const ProductCreatePage = () => {
 
     const navigate = useNavigate();
     const [createProduct, { isLoading, error }] = useCreateProductMutation();
+
+    const [modalShow, setModalShow] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
+    const [modalTitle, setModalTitle] = useState('');
+    const [isSuccess, setIsSuccess] = useState(false);
+
+    const showModal = (title, message, success = false) => {
+        setModalTitle(title);
+        setModalMessage(message);
+        setIsSuccess(success);
+        setModalShow(true);
+    };
+
+    const handleModalClose = () => {
+        setModalShow(false);
+        if (isSuccess) {
+            navigate('/admin/productlist');
+        }
+    };
 
     const handleVariantChange = (index, field, value) => {
         const newVariants = [...variants];
@@ -55,10 +75,9 @@ const ProductCreatePage = () => {
 
         try {
             await createProduct(formData).unwrap();
-            alert('Product created successfully');
-            navigate('/admin/productlist');
+            showModal('Success', 'Product created successfully', true);
         } catch (err) {
-            alert(err?.data?.message || err.error);
+            showModal('Error', err?.data?.message || err.error || 'Failed to create product');
         }
     };
 
@@ -138,6 +157,12 @@ const ProductCreatePage = () => {
                 </Form>
             </Card>
         </FormContainer>
+        <MessageModal
+            show={modalShow}
+            onHide={handleModalClose}
+            title={modalTitle}
+            message={modalMessage}
+        />
         </>
     );
 };

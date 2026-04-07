@@ -1,10 +1,10 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const BASE_URL = 'https://ecommerce-backend-production-f46e.up.railway.app';
+const BASE_URL = 'http://localhost:5000';
 
-const baseQuery = fetchBaseQuery({ 
-  baseUrl: BASE_URL, 
-  credentials: 'include',
+const baseQuery = fetchBaseQuery({
+  baseUrl: BASE_URL,
+  credentials: "include",
   prepareHeaders: (headers) => {
     return headers;
   },
@@ -16,11 +16,11 @@ const baseQueryWithErrorHandling = async (args, api, extraOptions) => {
     const result = await baseQuery(args, api, extraOptions);
     return result;
   } catch (error) {
-    console.error('API Error:', error);
+    console.error("API Error:", error);
     return {
       error: {
-        status: 'FETCH_ERROR',
-        error: error.message || 'Network error occurred',
+        status: "FETCH_ERROR",
+        error: error.message || "Network error occurred",
       },
     };
   }
@@ -28,6 +28,6 @@ const baseQueryWithErrorHandling = async (args, api, extraOptions) => {
 
 export const apiSlice = createApi({
   baseQuery: baseQueryWithErrorHandling,
-  tagTypes: ['Product', 'Order', 'User'],
+  tagTypes: ["Product", "Order", "User"],
   endpoints: (builder) => ({}),
 });

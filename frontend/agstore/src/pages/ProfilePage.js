@@ -9,12 +9,23 @@ import { useUpdateProfileMutation } from '../redux/slices/usersApiSlice';
 import { useGetMyOrdersQuery } from '../redux/slices/orderApiSlice';
 import { setCredentials } from '../redux/slices/authSlice';
 import styles from './styles/ProfilePage.module.css'; // <-- Import the new stylesheet
+import MessageModal from '../components/MessageModal';
 
 const ProfilePage = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  const [modalShow, setModalShow] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const [modalTitle, setModalTitle] = useState('');
+
+  const showModal = (title, message) => {
+    setModalTitle(title);
+    setModalMessage(message);
+    setModalShow(true);
+  };
 
   const { userInfo } = useSelector((state) => state.auth);
   const { data: orders, isLoading: loadingOrders, error: errorOrders } = useGetMyOrdersQuery();
@@ -32,16 +43,16 @@ const ProfilePage = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      alert('Passwords do not match');
+      showModal('Error', 'Passwords do not match');
     } else {
       try {
         const res = await updateProfile({ _id: userInfo._id, name, email, password }).unwrap();
         dispatch(setCredentials({ ...res }));
-        alert('Profile updated successfully');
+        showModal('Success', 'Profile updated successfully');
         setPassword('');
         setConfirmPassword('');
       } catch (err) {
-        alert(err?.data?.message || err.error);
+        showModal('Error', err?.data?.message || err.error || 'Profile update failed');
       }
     }
   };
@@ -81,7 +92,7 @@ const ProfilePage = () => {
                         <Form.Label className={styles.formLabel}>Confirm New Password</Form.Label>
                         <Form.Control type='password' placeholder='Confirm new password' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className={styles.formInput} />
                       </Form.Group>
-                      <Button type='submit' variant='primary' className={styles.updateButton}>Update</Button>
+                      <Button type='submit' variant='dark' className={styles.updateButton}>Update</Button>
                       {loadingUpdateProfile && <Loader />}
                     </Form>
                   </div>
@@ -115,6 +126,12 @@ const ProfilePage = () => {
           </Row>
         </Tab.Container>
       </div>
+      <MessageModal
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+        title={modalTitle}
+        message={modalMessage}
+      />
     </Container>
   );
 };

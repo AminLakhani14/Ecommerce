@@ -7,6 +7,9 @@ import {
 } from "../../redux/slices/productsApiSlice";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
+import MessageModal from "../../components/MessageModal";
+
+import { useState } from "react";
 
 const ProductListPage = () => {
   // The 'refetch' function is no longer needed here.
@@ -14,14 +17,34 @@ const ProductListPage = () => {
   const [deleteProduct, { isLoading: loadingDelete }] =
     useDeleteProductMutation();
 
-  const deleteHandler = async (id) => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
-      try {
-        await deleteProduct(id).unwrap();
-      } catch (err) {
-        alert(err?.data?.message || err.error || "Failed to delete product");
-      }
+  const [modalShow, setModalShow] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const [modalTitle, setModalTitle] = useState('');
+  const [modalType, setModalType] = useState('alert');
+  const [productIdToDelete, setProductIdToDelete] = useState(null);
+
+  const deleteHandler = (id) => {
+    setProductIdToDelete(id);
+    setModalTitle('Confirm Delete');
+    setModalMessage('Are you sure you want to delete this product? This action cannot be undone.');
+    setModalType('confirm');
+    setModalShow(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await deleteProduct(productIdToDelete).unwrap();
+      setModalShow(false);
+    } catch (err) {
+      setModalType('alert');
+      setModalTitle('Error');
+      setModalMessage(err?.data?.message || err.error || "Failed to delete product");
     }
+  };
+
+  const handleModalClose = () => {
+    setModalShow(false);
+    setProductIdToDelete(null);
   };
 
   return (
@@ -33,7 +56,7 @@ const ProductListPage = () => {
           </Col>
           <Col className="text-end">
             <LinkContainer to="/admin/product/create">
-              <Button className="my-3">
+              <Button variant="dark" className="my-3">
                 <FaPlus /> Create Product
               </Button>
             </LinkContainer>
@@ -84,6 +107,15 @@ const ProductListPage = () => {
           </Table>
         )}
       </Container>
+
+      <MessageModal
+        show={modalShow}
+        onHide={handleModalClose}
+        title={modalTitle}
+        message={modalMessage}
+        type={modalType}
+        onConfirm={confirmDelete}
+      />
     </>
   );
 };

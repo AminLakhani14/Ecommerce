@@ -4,6 +4,8 @@ import { FaCheck, FaTimes } from 'react-icons/fa';
 import Message from '../../components/Message';
 import Loader from '../../components/Loader';
 import { useGetOrdersQuery, useDeliverOrderMutation, useCancelOrderMutation } from '../../redux/slices/orderApiSlice';
+import MessageModal from '../../components/MessageModal';
+import { useState } from 'react';
 import styles from '../styles/OrderListPage.module.css'; // <-- Import the new stylesheet
 
 const OrderListPage = () => {
@@ -11,24 +13,47 @@ const OrderListPage = () => {
   const [deliverOrder, { isLoading: loadingDeliver }] = useDeliverOrderMutation();
   const [cancelOrder, { isLoading: loadingCancel }] = useCancelOrderMutation();
 
-  const deliverHandler = async (id) => {
-    if (window.confirm('Mark this order as complete/delivered?')) {
-      try {
-        await deliverOrder(id).unwrap();
-      } catch (err) {
-        alert(err?.data?.message || err.error);
+  const [modalShow, setModalShow] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const [modalTitle, setModalTitle] = useState('');
+  const [modalType, setModalType] = useState('alert');
+  const [pendingAction, setPendingAction] = useState(null);
+
+  const deliverHandler = (id) => {
+    setPendingAction({ type: 'deliver', id });
+    setModalTitle('Confirm Completion');
+    setModalMessage('Mark this order as complete/delivered?');
+    setModalType('confirm');
+    setModalShow(true);
+  };
+
+  const cancelHandler = (id) => {
+    setPendingAction({ type: 'cancel', id });
+    setModalTitle('Confirm Cancellation');
+    setModalMessage('Are you sure you want to cancel this order? This will restock the items.');
+    setModalType('confirm');
+    setModalShow(true);
+  };
+
+  const confirmAction = async () => {
+    if (!pendingAction) return;
+    try {
+      if (pendingAction.type === 'deliver') {
+        await deliverOrder(pendingAction.id).unwrap();
+      } else {
+        await cancelOrder(pendingAction.id).unwrap();
       }
+      setModalShow(false);
+    } catch (err) {
+      setModalType('alert');
+      setModalTitle('Error');
+      setModalMessage(err?.data?.message || err.error || 'Action failed');
     }
   };
 
-  const cancelHandler = async (id) => {
-    if (window.confirm('Are you sure you want to cancel this order? This will restock the items.')) {
-      try {
-        await cancelOrder(id).unwrap();
-      } catch (err) {
-        alert(err?.data?.message || err.error);
-      }
-    }
+  const handleModalClose = () => {
+    setModalShow(false);
+    setPendingAction(null);
   };
 
   const activeOrders = orders ? orders.filter(order => !order.isDelivered && !order.isCancelled) : [];
@@ -128,6 +153,14 @@ const OrderListPage = () => {
           </Tab.Content>
         </Tab.Container>
       )}
+      <MessageModal
+        show={modalShow}
+        onHide={handleModalClose}
+        title={modalTitle}
+        message={modalMessage}
+        type={modalType}
+        onConfirm={confirmAction}
+      />
     </Container>
   );
 };

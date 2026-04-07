@@ -7,6 +7,7 @@ import { useLoginMutation } from '../redux/slices/usersApiSlice';
 import { setCredentials } from '../redux/slices/authSlice';
 // import { FaGoogle } from 'react-icons/fa';
 import styles from './styles/Auth.module.css';
+import MessageModal from '../components/MessageModal';
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
@@ -18,6 +19,14 @@ const LoginPage = () => {
     const { search } = useLocation();
     const redirect = new URLSearchParams(search).get('redirect') || '/';
 
+    const [modalShow, setModalShow] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
+
+    const showErrorModal = (message) => {
+        setModalMessage(message);
+        setModalShow(true);
+    };
+
     useEffect(() => {
         if (userInfo) navigate(redirect);
     }, [navigate, redirect, userInfo]);
@@ -28,7 +37,9 @@ const LoginPage = () => {
             const res = await login({ email, password }).unwrap();
             dispatch(setCredentials({ ...res }));
             navigate(redirect);
-        } catch (err) { alert(err?.data?.message || err.error); }
+        } catch (err) { 
+            showErrorModal(err?.data?.message || err.error || 'Login failed'); 
+        }
     };
 
     // const googleAuthHandler = () => {
@@ -66,6 +77,12 @@ const LoginPage = () => {
                     </Row>
                 </Card.Body>
             </Card>
+            <MessageModal
+                show={modalShow}
+                onHide={() => setModalShow(false)}
+                title="Login Error"
+                message={modalMessage}
+            />
         </div>
     );
 };

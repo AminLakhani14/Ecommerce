@@ -2,7 +2,7 @@
   "name": "agstore",
   "version": "0.1.0",
   "private": true,
-  "proxy": "https://ecommerce-backend-production-f46e.up.railway.app",
+  "proxy": "http://localhost:5000",
   "dependencies": {
     "@reduxjs/toolkit": "^2.8.2",
     "@testing-library/dom": "^10.4.0",

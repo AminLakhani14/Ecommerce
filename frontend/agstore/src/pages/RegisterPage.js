@@ -6,6 +6,7 @@ import Loader from '../components/Loader';
 import { useRegisterMutation } from '../redux/slices/usersApiSlice';
 import { setCredentials } from '../redux/slices/authSlice';
 import styles from './styles/Auth.module.css'; // Reusing the login style
+import MessageModal from '../components/MessageModal';
 
 const RegisterPage = () => {
     const [name, setName] = useState('');
@@ -21,6 +22,14 @@ const RegisterPage = () => {
     
     const { search } = useLocation();
     const redirect = new URLSearchParams(search).get('redirect') || '/';
+
+    const [modalShow, setModalShow] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
+
+    const showErrorModal = (message) => {
+        setModalMessage(message);
+        setModalShow(true);
+    };
     
     useEffect(() => {
         if (userInfo) navigate(redirect);
@@ -29,7 +38,7 @@ const RegisterPage = () => {
     const submitHandler = async (e) => {
         e.preventDefault();
         if (password !== confirmPassword) {
-            alert('Passwords do not match');
+            showErrorModal('Passwords do not match');
             return;
         }
         try {
@@ -37,7 +46,7 @@ const RegisterPage = () => {
             dispatch(setCredentials({ ...res }));
             navigate(redirect);
         } catch (err) {
-            alert(err?.data?.message || err.error);
+            showErrorModal(err?.data?.message || err.error || 'Registration failed');
         }
     };
     
@@ -74,6 +83,12 @@ const RegisterPage = () => {
                     </Row>
                 </Card.Body>
             </Card>
+            <MessageModal
+                show={modalShow}
+                onHide={() => setModalShow(false)}
+                title="Registration Error"
+                message={modalMessage}
+            />
         </div>
     );
 };

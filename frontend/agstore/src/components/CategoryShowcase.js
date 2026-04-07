@@ -22,7 +22,7 @@ const CategoryShowcase = () => {
         </Col>
         <Col md={4} className="mb-6">
           <ShowcaseCard
-            imageSrc="https://katespade.com.au/dw/image/v2/BDFS_PRD/on/demandware.static/-/Sites-katespade-master-catalog/default/dwf343031b/images/KL194/K_KL194960_2.jpg?sw=600&sh=800"
+            imageSrc="https://img.freepik.com/free-photo/top-view-accessoires-travel-with-women-clothing-concept-white-mobilephone-watch-bag-hat-map-camera-necklace-trousers-sunglasses-white-wood-table_1921-106.jpg"
             title="Shop Accessories"
             linkTo="/category/accessories"
           />

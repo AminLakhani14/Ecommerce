@@ -1,16 +1,16 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col, ListGroup, Button, Card, Container } from 'react-bootstrap';
-import { FaTrash } from 'react-icons/fa';
-import Message from '../components/Message';
-import { addToCart, removeFromCart } from '../redux/slices/cartSlice';
-import QuantityCounter from '../components/QuantityCounter';
-import styles from './styles/CartPage.module.css'; 
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Row, Col, ListGroup, Button, Card, Container } from "react-bootstrap";
+import { FaTrash } from "react-icons/fa";
+import Message from "../components/Message";
+import { addToCart, removeFromCart } from "../redux/slices/cartSlice";
+import QuantityCounter from "../components/QuantityCounter";
+import styles from "./styles/CartPage.module.css";
 
 const CartPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const serverUrl = 'https://ecommerce-backend-production-f46e.up.railway.app';
+  const serverUrl = 'http://localhost:5000';
 
   const cart = useSelector((state) => state.cart);
   const { cartItems } = cart;
@@ -24,7 +24,7 @@ const CartPage = () => {
   };
 
   const checkoutHandler = () => {
-    navigate('/login?redirect=/shipping');
+    navigate("/login?redirect=/shipping");
   };
 
   return (
@@ -34,41 +34,62 @@ const CartPage = () => {
         <Col md={8}>
           {cartItems.length === 0 ? (
             <Message>
-              Your cart is empty <Link to='/'>Go Back</Link>
+              Your cart is empty <Link to="/">Go Back</Link>
             </Message>
           ) : (
-            <ListGroup variant='flush'>
+            <ListGroup variant="flush">
               {cartItems.map((item) => (
-                <ListGroup.Item key={`${item._id}-${item.size}`} className="px-0">
+                <ListGroup.Item
+                  key={`${item._id}-${item.size}`}
+                  className="px-0"
+                >
                   <div className={styles.cartItem}>
                     {/* Image */}
-                    <img src={`${serverUrl}${item.image}`} alt={item.name} className={styles.productImage} />
-                    
+                    <img
+                      src={`${serverUrl}${item.image}`}
+                      alt={item.name}
+                      className={styles.productImage}
+                    />
+
                     {/* Product Info */}
                     <div className={styles.productInfo}>
-                      <Link to={`/product/${item._id}`} className={styles.productName}>{item.name}</Link>
+                      <Link
+                        to={`/product/${item._id}`}
+                        className={styles.productName}
+                      >
+                        {item.name}
+                      </Link>
                       <div className={styles.productDetails}>
                         <span>Size: {item.size}</span>
                         <span className="mx-2">|</span>
                         <span>Price: PKR {item.price}</span>
                       </div>
-                      <div style={{ maxWidth: '150px' }} className="mt-2">
-                         <QuantityCounter 
-                            value={item.qty}
-                            setValue={(newQty) => updateQuantityHandler(item, newQty)}
-                            max={item?.variants?.find(v => v.size === item.size)?.stock || 0}
-                         />
+                      <div style={{ maxWidth: "150px" }} className="mt-2">
+                        <QuantityCounter
+                          value={item.qty}
+                          setValue={(newQty) =>
+                            updateQuantityHandler(item, newQty)
+                          }
+                          max={
+                            item?.variants?.find((v) => v.size === item.size)
+                              ?.stock || 0
+                          }
+                        />
                       </div>
                     </div>
 
                     <div className="text-end">
-                      <h5 className={styles.productPrice}>PKR {item.price * item.qty}</h5>
-                      <Button 
-                        type='button' 
-                        variant='light' 
-                        onClick={() => removeFromCartHandler(item._id, item.size)}
+                      <h5 className={styles.productPrice}>
+                        PKR {item.price * item.qty}
+                      </h5>
+                      <Button
+                        type="button"
+                        variant="light"
+                        onClick={() =>
+                          removeFromCartHandler(item._id, item.size)
+                        }
                       >
-                        <FaTrash style={{ color: '#6c757d' }} />
+                        <FaTrash style={{ color: "#6c757d" }} />
                       </Button>
                     </div>
                   </div>
@@ -86,25 +107,28 @@ const CartPage = () => {
               </Card.Title>
               <ListGroup variant="flush">
                 <ListGroup.Item className="d-flex justify-content-between">
-                  <span>Subtotal ({cartItems.reduce((acc, item) => acc + item.qty, 0)} items)</span>
+                  <span>
+                    Subtotal (
+                    {cartItems.reduce((acc, item) => acc + item.qty, 0)} items)
+                  </span>
                   <strong>PKR {cart.itemsPrice}</strong>
                 </ListGroup.Item>
                 <ListGroup.Item className="d-flex justify-content-between">
                   <span>Shipping</span>
                   <strong>PKR {cart.shippingPrice}</strong>
                 </ListGroup.Item>
-                
+
                 <ListGroup.Item className="d-flex justify-content-between h5 mt-3">
                   <strong>Total</strong>
                   <strong>PKR {cart.totalPrice}</strong>
                 </ListGroup.Item>
-                <ListGroup.Item>
-                </ListGroup.Item>
+                <ListGroup.Item></ListGroup.Item>
                 <ListGroup.Item>
                   <div className="d-grid">
                     <Button
-                      type='button'
-                      className='mt-3'
+                      variant="dark"
+                      type="button"
+                      className="mt-3"
                       disabled={cartItems.length === 0}
                       onClick={checkoutHandler}
                     >
