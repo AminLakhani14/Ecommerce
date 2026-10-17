@@ -1,0 +1,11 @@
+.hero { background: #f3f0ea; padding: 80px 0; }
+.eyebrow { text-transform: uppercase; letter-spacing: .16em; font-size: .75rem; font-weight: 600; color: #6b665e; margin-bottom: 20px; }
+.hero h1 { font-size: clamp(2.8rem, 6vw, 5rem); letter-spacing: -.045em; line-height: 1.06; font-weight: 500; }
+.intro { color: #615d57; max-width: 540px; margin-top: 24px; font-size: 1.1rem; line-height: 1.8; }
+.storyImage { width: 100%; aspect-ratio: 5 / 4; object-fit: cover; }
+.value { border-top: 1px solid #d9d5cf; padding-top: 24px; }
+.value span { font-size: .8rem; color: #8a8174; }
+.value h3 { font-size: 1.3rem; margin: 18px 0 12px; }
+.value p { color: #6c6c6c; line-height: 1.7; }
+.contact { background: #f7f6f3; text-align: center; padding: 48px 20px; }
+@media (max-width: 767px) { .hero { padding: 48px 0; } }

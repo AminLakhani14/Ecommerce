@@ -42,6 +42,9 @@
   transform: translateY(0); /* Slide in on hover */
 }
 
+.card:focus-within .sizeSelector { transform: translateY(0); }
+@media (hover: none) { .sizeSelector { transform: translateY(0); } }
+
 .card:hover .productImage {
   opacity: 0.8; /* Slightly fade image on hover */
 }
