@@ -1,148 +1,51 @@
+import { Link, useNavigate } from 'react-router-dom';
+import { Container } from 'react-bootstrap';
+import { FiArrowLeft, FiArrowRight, FiShoppingBag, FiTrash2, FiTruck } from 'react-icons/fi';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { addToCart, removeFromCart } from '../redux/slices/cartSlice';
+import { formatUSD } from '../utils/currency';
+import { FREE_SHIPPING_THRESHOLD } from '../utils/cartUtils';
 import { productImageUrl } from '../utils/productImage';
-import { Link, useNavigate } from "react-router-dom";
-import { useAppDispatch as useDispatch, useAppSelector as useSelector } from '../redux/hooks';
-import { Row, Col, ListGroup, Button, Card, Container } from "react-bootstrap";
-import { FaTrash } from "react-icons/fa";
-import Message from "../components/Message";
-import { addToCart, removeFromCart } from "../redux/slices/cartSlice";
-import QuantityCounter from "../components/QuantityCounter";
-import styles from "./styles/CartPage.module.css";
-
-const CartPage = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  const cart = useSelector((state) => state.cart);
-  const { cartItems } = cart;
-
-  const updateQuantityHandler = (product: import('../types').CartItem, newQty: number) => {
-    dispatch(addToCart({ ...product, qty: newQty }));
-  };
-
-  const removeFromCartHandler = (id: string, size: string) => {
-    dispatch(removeFromCart({ id, size }));
-  };
-
-  const checkoutHandler = () => {
-    navigate("/login?redirect=/shipping");
-  };
-
-  return (
-    <Container className="my-5">
-      <h1 className="mb-4">Shopping Cart</h1>
-      <Row>
-        <Col md={8}>
-          {cartItems.length === 0 ? (
-            <Message>
-              Your cart is empty <Link to="/">Go Back</Link>
-            </Message>
-          ) : (
-            <ListGroup variant="flush">
-              {cartItems.map((item) => (
-                <ListGroup.Item
-                  key={`${item._id}-${item.size}`}
-                  className="px-0"
-                >
-                  <div className={styles.cartItem}>
-                    {/* Image */}
-                    <img
-                      src={productImageUrl(item.image)}
-                      alt={item.name}
-                      className={styles.productImage}
-                    />
-
-                    {/* Product Info */}
-                    <div className={styles.productInfo}>
-                      <Link
-                        to={`/product/${item._id}`}
-                        className={styles.productName}
-                      >
-                        {item.name}
-                      </Link>
-                      <div className={styles.productDetails}>
-                        <span>Size: {item.size}</span>
-                        <span className="mx-2">|</span>
-                        <span>Price: PKR {item.price}</span>
-                      </div>
-                      <div style={{ maxWidth: "150px" }} className="mt-2">
-                        <QuantityCounter
-                          value={item.qty}
-                          setValue={(newQty) =>
-                            updateQuantityHandler(item, newQty)
-                          }
-                          max={
-                            item?.variants?.find((v) => v.size === item.size)
-                              ?.stock || 0
-                          }
-                        />
-                      </div>
-                    </div>
-
-                    <div className="text-end">
-                      <h5 className={styles.productPrice}>
-                        PKR {item.price * item.qty}
-                      </h5>
-                      <Button
-                        type="button"
-                        variant="light"
-                        onClick={() =>
-                          removeFromCartHandler(item._id, item.size)
-                        }
-                      >
-                        <FaTrash style={{ color: "#6c757d" }} />
-                      </Button>
-                    </div>
-                  </div>
-                </ListGroup.Item>
-              ))}
-            </ListGroup>
-          )}
-        </Col>
-
-        <Col md={4}>
-          <Card className={styles.summaryCard}>
-            <Card.Body>
-              <Card.Title as="h2" className="mb-4">
-                Order Summary
-              </Card.Title>
-              <ListGroup variant="flush">
-                <ListGroup.Item className="d-flex justify-content-between">
-                  <span>
-                    Subtotal (
-                    {cartItems.reduce((acc, item) => acc + item.qty, 0)} items)
-                  </span>
-                  <strong>PKR {cart.itemsPrice}</strong>
-                </ListGroup.Item>
-                <ListGroup.Item className="d-flex justify-content-between">
-                  <span>Shipping</span>
-                  <strong>PKR {cart.shippingPrice}</strong>
-                </ListGroup.Item>
-
-                <ListGroup.Item className="d-flex justify-content-between h5 mt-3">
-                  <strong>Total</strong>
-                  <strong>PKR {cart.totalPrice}</strong>
-                </ListGroup.Item>
-                <ListGroup.Item></ListGroup.Item>
-                <ListGroup.Item>
-                  <div className="d-grid">
-                    <Button
-                      variant="dark"
-                      type="button"
-                      className="mt-3"
-                      disabled={cartItems.length === 0}
-                      onClick={checkoutHandler}
-                    >
-                      Proceed To Checkout
-                    </Button>
-                  </div>
-                </ListGroup.Item>
-              </ListGroup>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
-  );
-};
-
-export default CartPage;
+import QuantityCounter from '../components/QuantityCounter';
+import OrderSummary from '../components/OrderSummary';
+import CheckoutProgress from '../components/CheckoutProgress';
+import styles from './styles/Commerce.module.css';
+export default function CartPage() {
+  const dispatch=useAppDispatch(); const navigate=useNavigate();
+  const cart=useAppSelector(state=>state.cart);
+  const user=useAppSelector(state=>state.auth.userInfo);
+  const count=cart.cartItems.reduce((total,item)=>total+item.qty,0);
+  const freeShipping=Number(cart.shippingPrice)===0;
+  const remaining=Math.max(FREE_SHIPPING_THRESHOLD-cart.itemsPrice,0);
+  const progress=freeShipping?100:Math.min(99,cart.itemsPrice/FREE_SHIPPING_THRESHOLD*100);
+  return <Container className={styles.page}>
+    <div className={styles.pageHeader}><div><p className='eyebrow'>YOUR EVERYDAY FINDS</p><h1>Your shopping bag<span>{count}</span></h1><p>A good choice looks even better together.</p></div><Link to='/' className={styles.backLink}><FiArrowLeft /> Continue shopping</Link></div>
+    {cart.cartItems.length?<>
+      <CheckoutProgress current={1} />
+      <div className={styles.layout}>
+        <section className={styles.bagPanel} aria-label='Shopping bag items'>
+          <div className={`${styles.shippingMeter} ${freeShipping?styles.shippingUnlocked:''}`}>
+            <span className={styles.meterIcon}><FiTruck aria-hidden='true' /></span>
+            <div><p>{freeShipping?<>Nice — you've unlocked <strong>free shipping</strong>.</>:<>You're <strong>{formatUSD(remaining||0.01)}</strong> away from free shipping.</>}</p>
+              <div className={styles.meterTrack} role='progressbar' aria-label='Progress toward free shipping' aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress)}><span style={{width:`${progress}%`}} /></div></div>
+          </div>
+          <div className={styles.bagHeading}><h2>The pieces you picked</h2><span>{count} {count===1?'item':'items'}</span></div>
+          <ul className={styles.cartItems}>
+            {cart.cartItems.map(item=>{
+              const stock=item.variants.find(variant=>variant.size===item.size)?.stock||0;
+              return <li className={styles.cartItem} key={`${item._id}-${item.size}`}>
+                <Link to={`/product/${item._id}`} className={styles.cartImage}><img src={productImageUrl(item.image)} alt={item.name} /></Link>
+                <div className={styles.productInfo}>{item.subCategory&&<p className={styles.productType}>{item.subCategory}</p>}<Link to={`/product/${item._id}`} className={styles.productName}>{item.name}</Link>
+                  <div className={styles.meta}><span className={styles.chip}><small>Size</small>{item.size||'Standard'}</span><span>{formatUSD(item.price)} each</span>{stock>0&&stock<=3&&<span className={styles.lowStock}>Only {stock} left</span>}</div>
+                  <div className={styles.stepper}><QuantityCounter value={item.qty} setValue={qty=>dispatch(addToCart({...item,qty}))} max={stock} /></div></div>
+                <div className={styles.itemActions}><strong>{formatUSD(item.price*item.qty)}</strong><button type='button' aria-label={`Remove ${item.name} (${item.size})`} onClick={()=>dispatch(removeFromCart({id:item._id,size:item.size}))}><FiTrash2 /> Remove</button></div>
+              </li>;
+            })}
+          </ul>
+          <div className={styles.bagFootnote}><FiShoppingBag /><span>Found something else you love? Your bag will be here.</span></div>
+        </section>
+        <OrderSummary cart={cart}><button type='button' className={styles.cta} onClick={()=>navigate(user?'/shipping':'/login?redirect=/shipping')}>Continue to checkout <FiArrowRight /></button><p className={styles.paymentHint}>You won't pay anything until your order arrives.</p></OrderSummary>
+      </div>
+    </>:<section className={styles.empty}><span><FiShoppingBag /></span><p className='eyebrow'>ROOM FOR SOMETHING GOOD</p><h2>Your bag is waiting.</h2><p>Explore the collections and find your next everyday favorite.</p><Link to='/' className='btn btn-dark'>Explore the store <FiArrowRight /></Link></section>}
+  </Container>;
+}

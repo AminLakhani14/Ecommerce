@@ -1,43 +1,9 @@
-.bannerImage {
-  height: 600px;
-  object-fit: cover;
-  filter: brightness(0.6);
-}
-
-.bannerOverlay {
-  display: flex;
-  align-items: center;
-  justify-content: center; /* Horizontally center the content wrapper */
-  text-align: center; /* Center the text inside the content block */
-}
-
-/* This is the container-like wrapper for our content */
-.bannerContentWrapper {
-  width: 100%;
-  padding-right: 15px;
-  padding-left: 15px;
-  margin-right: auto;
-  margin-left: auto;
-}
-
-/* Media queries for max-width of the content wrapper */
-@media (min-width: 576px) { .bannerContentWrapper { max-width: 540px; } }
-@media (min-width: 768px) { .bannerContentWrapper { max-width: 720px; } }
-@media (min-width: 992px) { .bannerContentWrapper { max-width: 960px; } }
-@media (min-width: 1200px) { .bannerContentWrapper { max-width: 1140px; } }
-
-/* --- START: THIS IS THE FIX --- */
-/* The actual content block (text and buttons) */
-.bannerContent {
-  /* Remove the max-width to allow the content to center properly */
-  /* max-width: 50%; <-- DELETE OR COMMENT OUT THIS LINE */
-}
-
-/* New style for the button group */
-.buttonGroup {
-  margin-top: 1.5rem;
-  display: flex;
-  justify-content: center;
-  gap: 1rem; /* Adds space between the buttons */
-}
-/* --- END: THIS IS THE FIX --- */
+.banner { position: relative; min-height: 340px; border-radius: 12px; background: #243b2d; color: white; overflow: hidden; display: flex; align-items: center; margin: 5px 0 30px; }
+.banner>img { position: absolute; inset: 0; height: 100%; width: 100%; object-fit: cover; object-position: center 40%; }
+.banner::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg,#172b23e8,#172b2385 60%,#172b2320); }
+.content { position: relative; z-index: 1; padding: 44px 56px; max-width: 670px; }
+.content h2 { font: 400 clamp(35px,3.6vw,57px)/1.1 Georgia,serif; letter-spacing: -.04em; margin-bottom: 18px; }
+.content>p:not(:first-child) { color: #dce4db; line-height: 1.7; max-width: 400px; font-size: 14px; }
+.actions a { display: inline-flex; align-items: center; justify-content: space-between; gap: 40px; padding: 12px 0 6px; border-bottom: 1px solid #ffffff85; color: white; text-decoration: none; font-size: 13px; font-weight: 600; }
+.note { position: absolute; z-index: 1; right: 40px; bottom: 35px; font-size: 10px; letter-spacing: .2em; }
+@media(max-width:600px) { .content { padding: 32px 25px; } .banner { min-height: 350px; } .note { display: none; } }

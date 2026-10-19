@@ -10,6 +10,7 @@ export const orderApiSlice = apiSlice.injectEndpoints({
         method: 'POST',
         body: order,
       }),
+      invalidatesTags: ['Order', 'Product'],
     }),
     
     // This query will get the details of a specific order
@@ -18,6 +19,7 @@ export const orderApiSlice = apiSlice.injectEndpoints({
         url: `/api/orders/${orderId}`,
       }),
       keepUnusedDataFor: 5,
+      providesTags: ['Order'],
     }),
 
     getMyOrders: builder.query<Order[], void>({
@@ -25,6 +27,7 @@ export const orderApiSlice = apiSlice.injectEndpoints({
         url: `/api/orders/myorders`,
       }),
       keepUnusedDataFor: 5,
+      providesTags: ['Order'],
     }),
 
     getOrders: builder.query<Order[], void>({
@@ -46,7 +49,7 @@ export const orderApiSlice = apiSlice.injectEndpoints({
         url: `/api/orders/${orderId}/cancel`,
         method: 'PUT',
       }),
-      invalidatesTags: ['Order'], // Invalidate the order list
+      invalidatesTags: ['Order', 'Product'], // Inventory changes too.
     }),
     // This mutation will simulate the payment
     payOrder: builder.mutation<Order, string | undefined>({
@@ -54,6 +57,7 @@ export const orderApiSlice = apiSlice.injectEndpoints({
         url: `/api/orders/${orderId}/pay`,
         method: 'PUT',
       }),
+      invalidatesTags: ['Order'],
     }),
   }),
 });

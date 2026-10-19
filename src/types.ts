@@ -1,10 +1,11 @@
 export interface Variant { size: string; stock: number }
 export interface Product {
   _id: string; name: string; image: string; gallery: string[]; description: string;
-  category: string; subCategory: string; price: number; countInStock: number;
+  category: string | string[]; subCategory: string; price: number; countInStock: number;
   isOnSale: boolean; isActive: boolean; variants: Variant[];
 }
 export interface UserInfo { _id: string; name: string; email: string; isAdmin: boolean; token?: string }
+export type ProductSummary = Omit<Product, 'description' | 'gallery'>;
 export interface ShippingAddress {
   email: string; firstName: string; lastName: string; address: string; city: string;
   state: string; postalCode: string; country: string; phone: string;

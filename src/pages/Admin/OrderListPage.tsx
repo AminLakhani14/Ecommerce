@@ -1,3 +1,4 @@
+import { formatUSD } from '../../utils/currency';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 import { Table, Button, Tab, Nav, Container } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
@@ -76,7 +77,7 @@ const OrderListPage = () => {
                 <td>{order._id}</td>
                 <td>{order.user?.name || 'N/A'}</td>
                 <td>{order.createdAt.substring(0, 10)}</td>
-                <td>PKR {order.totalPrice}</td>
+                <td>{formatUSD(order.totalPrice)}</td>
                 <td>{order.isPaid ? <FaCheck style={{ color: 'green' }} /> : <FaTimes style={{ color: 'red' }} />}</td>
                 {tabType !== 'cancelled' && (
                   <td>
@@ -105,7 +106,7 @@ const OrderListPage = () => {
             </div>
             <div className={styles.cardBody}>
               <p><strong>User:</strong> {order.user?.name || 'N/A'}</p>
-              <p><strong>Total:</strong> PKR {order.totalPrice}</p>
+              <p><strong>Total:</strong> {formatUSD(order.totalPrice)}</p>
               <p><strong>Paid:</strong> 
                 <span className={`${styles.statusBadge} ${order.isPaid ? styles.statusPaid : styles.statusNotPaid}`}>
                   {order.isPaid ? 'Yes' : 'No'}

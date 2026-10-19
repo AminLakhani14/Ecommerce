@@ -41,7 +41,7 @@ const CategoryPage = () => {
     if (collection) {
       return <>
         <p className='text-muted mb-4'>{products.length} products</p>
-        <Row className='g-4'>
+        <Row className="product-grid">
           {products.map(product => <Col key={product._id} xs={12} sm={6} lg={4} xl={3}>
             <ProductCard product={product} />
           </Col>)}
@@ -55,7 +55,7 @@ const CategoryPage = () => {
       <div key={subCategory} className="mb-5">
         <h2 className="text-muted">{subCategory}</h2>
         <hr />
-        <Row>
+        <Row className="product-grid">
           {groupedProducts[subCategory].map(product => (
             <Col key={product._id} xs={12} sm={6} md={4} lg={3}>
               <ProductCard product={product} />

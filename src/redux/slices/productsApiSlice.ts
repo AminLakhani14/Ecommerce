@@ -1,17 +1,25 @@
-import type { Product, UserInfo, Order, OrderInput } from '../../types';
+import type { Product, ProductSummary } from '../../types';
 import { apiSlice } from './apiSlice';
 
 export const productsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    getAdminProducts: builder.query<Product[], void>({
+      query: () => ({ url: '/api/products/admin' }),
+      providesTags: ['Product'],
+    }),
+    getAdminProductDetails: builder.query<Product, string | undefined>({
+      query: id => ({ url: `/api/products/admin/${id}` }),
+      providesTags: (result, error, id) => [{ type: 'Product', id }],
+    }),
     getProducts: builder.query<Product[], void>({
       query: () => ({ url: '/api/products' }),
       providesTags: ['Product'],
-      keepUnusedDataFor: 5,
+      keepUnusedDataFor: 60,
     }),
     getProductDetails: builder.query<Product, string | undefined>({
       query: (productId) => ({ url: `/api/products/${productId}` }),
       providesTags: (result, error, id) => [{ type: 'Product', id }],
-      keepUnusedDataFor: 5,
+      keepUnusedDataFor: 60,
     }),
     // --- START: ADDED NEW ENDPOINTS ---
     createProduct: builder.mutation<Product, FormData>({
@@ -22,14 +30,14 @@ export const productsApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Product'], // Invalidate cache to refetch product list
     }),
-    getHomepageProducts: builder.query<Record<string, Product[]>, void>({
+    getHomepageProducts: builder.query<Record<string, ProductSummary[]>, void>({
       query: () => ({ url: '/api/products/homepage' }),
       providesTags: ['Product'],
-      keepUnusedDataFor: 5,
+      keepUnusedDataFor: 60,
     }),
     getProductsByCategory: builder.query<Product[], string | undefined>({
       query: (categoryName) => ({
-        url: `/api/products/category/${categoryName}`,
+        url: `/api/products/category/${encodeURIComponent(categoryName || '')}`,
       }),
       providesTags: ['Product'],
     }),
@@ -70,6 +78,8 @@ export const productsApiSlice = apiSlice.injectEndpoints({
 
 // Export the new hooks alongside the old ones
 export const {
+  useGetAdminProductsQuery,
+  useGetAdminProductDetailsQuery,
   useGetProductsQuery,
   useGetProductDetailsQuery,
   useCreateProductMutation,

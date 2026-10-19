@@ -28,7 +28,8 @@ const baseQueryWithErrorHandling: BaseQueryFn<string | FetchArgs, unknown, Fetch
 };
 
 export const apiSlice = createApi({
+  refetchOnMountOrArgChange: 15,
   baseQuery: baseQueryWithErrorHandling,
-  tagTypes: ["Product", "Order", "User"],
+  tagTypes: ["Product", "Order", "User", "Category"],
   endpoints: (builder) => ({}),
 });

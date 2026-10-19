@@ -1,3 +1,6 @@
+import SearchDialog from '../components/SearchDialog';
+import { FiSearch } from 'react-icons/fi';
+import { useGetCategoriesQuery } from '../redux/slices/categoriesApiSlice';
 import { useState, useEffect } from 'react';
 import { Navbar, Nav, Container, NavDropdown, Badge } from 'react-bootstrap';
 import { FaUser, FaShoppingCart } from 'react-icons/fa';
@@ -11,6 +14,7 @@ import MegaMenu from '../components/MegaMenu';
 import { megaMenuData } from '../data/menuData';
 
 const Header = () => {
+  const { data: categories = [] } = useGetCategoriesQuery();
   const { cartItems } = useSelector((state) => state.cart);
   const { userInfo } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -19,6 +23,7 @@ const Header = () => {
 
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [expanded, setExpanded] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [isDesktop, setDesktop] = useState(window.innerWidth >= 1200);
 
   const updateMedia = () => {
@@ -28,7 +33,7 @@ const Header = () => {
   useEffect(() => {
     window.addEventListener("resize", updateMedia);
     return () => window.removeEventListener("resize", updateMedia);
-  });
+  }, []);
 
   // --- START: NEW, SMARTER EVENT HANDLERS ---
   
@@ -73,12 +78,13 @@ const Header = () => {
   // --- END: NEW, SMARTER EVENT HANDLERS ---
 
   return (
-    <header style={{ position: 'relative' }} onMouseLeave={handleMouseLeave}>
+    <header className='store-header' onMouseLeave={handleMouseLeave}>
+      <div className='announcement-bar'><div className='container'><span>THE EVERYDAY EDIT</span><span>Considered essentials. Effortless style.</span><LinkContainer to='/about'><a>Discover AG-Store</a></LinkContainer></div></div>
       <Navbar 
         bg="light" 
         variant="light" 
         expand="xl"
-        className="shadow-sm"
+        className="store-navbar"
         expanded={expanded}
         onToggle={() => setExpanded(!expanded)}
       >
@@ -86,51 +92,31 @@ const Header = () => {
           <LinkContainer to='/' onClick={closeAllMenus}>
             <Navbar.Brand>
               {/* <img src={logo} alt='AG-Store' style={{ height: '40px', marginRight: '10px' }} />  */}
-              <strong>AG-Store</strong>
+              <span className='brand-mark' aria-hidden='true'>AG</span><strong>AG-Store</strong>
             </Navbar.Brand>
           </LinkContainer>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="mx-auto">
+            <Nav className="store-categories me-auto ms-xl-4">
               <LinkContainer to='/about' onClick={closeAllMenus}>
                 <Nav.Link onMouseEnter={() => handleMouseEnter(null)}>About Us</Nav.Link>
               </LinkContainer>
-              {/* --- START: UPDATED NAV LINKS WITH CLICK LOGIC --- */}
-              <LinkContainer 
-                to='/category/men'
-                onClick={(e) => handleMegaMenuToggle(e, 'Men')}
-              >
-                <Nav.Link onMouseEnter={() => handleMouseEnter('Men')}>Men</Nav.Link>
-              </LinkContainer>
-              <LinkContainer 
-                to='/category/women'
-                onClick={(e) => handleMegaMenuToggle(e, 'Women')}
-              >
-                <Nav.Link onMouseEnter={() => handleMouseEnter('Women')}>Women</Nav.Link>
-              </LinkContainer>
-              <LinkContainer 
-                to='/category/children'
-                onClick={(e) => handleMegaMenuToggle(e, 'Children')}
-              >
-                <Nav.Link onMouseEnter={() => handleMouseEnter('Children')}>Children</Nav.Link>
-              </LinkContainer>
-              
-              {/* These links behave normally and close all menus */}
-              <LinkContainer to='/category/accessories' onClick={closeAllMenus}>
-                <Nav.Link onMouseEnter={() => handleMouseEnter(null)}>Accessories</Nav.Link>
-              </LinkContainer>
-              <LinkContainer to='/category/backpacks' onClick={closeAllMenus}>
-                <Nav.Link onMouseEnter={() => handleMouseEnter(null)}>Backpacks</Nav.Link>
-              </LinkContainer>
-              <LinkContainer to='/category/clothing' onClick={closeAllMenus}>
-                <Nav.Link onMouseEnter={() => handleMouseEnter(null)}>Clothing</Nav.Link>
-              </LinkContainer>
+              {categories.map(category => {
+                const menuName = Object.keys(megaMenuData).find(name => name.toLowerCase() === category.toLowerCase());
+                return (
+                  <LinkContainer key={category} to={`/category/${encodeURIComponent(category.toLowerCase())}`}
+                    onClick={closeAllMenus}>
+                    <Nav.Link onMouseEnter={() => handleMouseEnter(menuName || null)}>{category}</Nav.Link>
+                  </LinkContainer>
+                );
+              })}
               <LinkContainer to='/sale' onClick={closeAllMenus}>
                 <Nav.Link className="text-danger" onMouseEnter={() => handleMouseEnter(null)}><strong>Sale</strong></Nav.Link>
               </LinkContainer>
               {/* --- END: UPDATED NAV LINKS --- */}
             </Nav>
-            <Nav>
+            <Nav className='store-account-nav'>
+              <button className='icon-button' aria-label='Search the store' onClick={() => { closeAllMenus(); setSearchOpen(true); }}><FiSearch /></button>
               <LinkContainer to='/cart' onClick={closeAllMenus}>
                 <Nav.Link>
                   <FaShoppingCart /> Cart
@@ -141,19 +127,20 @@ const Header = () => {
                   )}
                 </Nav.Link>
               </LinkContainer>
-              {userInfo ? (
-                 <NavDropdown title={userInfo.name} id='username'>
-                 <LinkContainer to='/profile' onClick={closeAllMenus}><NavDropdown.Item>Profile</NavDropdown.Item></LinkContainer>
-                 <NavDropdown.Item onClick={logoutHandler}>Logout</NavDropdown.Item>
-               </NavDropdown>
-              ) : (
-                <LinkContainer to='/login' onClick={closeAllMenus}><Nav.Link><FaUser /> Sign In</Nav.Link></LinkContainer>
-              )}
               {userInfo && userInfo.isAdmin && (
                 <NavDropdown title='Admin' id='adminmenu'>
                   <LinkContainer to='/admin/productlist' onClick={closeAllMenus}><NavDropdown.Item>Products</NavDropdown.Item></LinkContainer>
                   <LinkContainer to='/admin/orderlist' onClick={closeAllMenus}><NavDropdown.Item>Orders</NavDropdown.Item></LinkContainer>
+                  <LinkContainer to='/admin/settings' onClick={closeAllMenus}><NavDropdown.Item>Settings</NavDropdown.Item></LinkContainer>
                 </NavDropdown>
+              )}
+              {userInfo ? (
+                <NavDropdown title={userInfo.name} id='username'>
+                  <LinkContainer to='/profile' onClick={closeAllMenus}><NavDropdown.Item>Profile</NavDropdown.Item></LinkContainer>
+                  <NavDropdown.Item onClick={logoutHandler}>Logout</NavDropdown.Item>
+                </NavDropdown>
+              ) : (
+                <LinkContainer to='/login' onClick={closeAllMenus}><Nav.Link><FaUser /> Sign In</Nav.Link></LinkContainer>
               )}
             </Nav>
           </Navbar.Collapse>
@@ -162,6 +149,7 @@ const Header = () => {
       
       {/* Pass the 'closeAllMenus' function to the MegaMenu */}
       {activeMenu && <MegaMenu menuData={megaMenuData[activeMenu as keyof typeof megaMenuData]} mainCategory={activeMenu} closeAllMenus={closeAllMenus} />}
+      <SearchDialog show={searchOpen} onHide={() => setSearchOpen(false)} />
     </header>
   );
 };

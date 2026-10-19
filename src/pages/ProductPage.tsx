@@ -1,3 +1,4 @@
+import { formatUSD } from '../utils/currency';
 import { productImageUrl } from '../utils/productImage';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { useState, useEffect } from "react";
@@ -151,7 +152,7 @@ const ProductPage = () => {
                   <Row>
                     <Col>Price:</Col>
                     <Col>
-                      <strong>PKR {product.price}</strong>
+                      <strong>{formatUSD(product.price)}</strong>
                     </Col>
                   </Row>
                 </ListGroup.Item>

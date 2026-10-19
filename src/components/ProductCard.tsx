@@ -1,3 +1,4 @@
+import { formatUSD } from '../utils/currency';
 import { productImageUrl } from '../utils/productImage';
 import { useState, useEffect } from "react";
 import { Button, Row, Col } from "react-bootstrap";
@@ -8,7 +9,7 @@ import styles from "./ProductCard.module.css";
 import QuantityCounter from "./QuantityCounter";
 import MessageModal from "./MessageModal";
 
-const ProductCard = ({ product }: { product: import('../types').Product }) => {
+const ProductCard = ({ product }: { product: import('../types').ProductSummary }) => {
   const dispatch = useDispatch();
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [qty, setQty] = useState(1);
@@ -45,8 +46,8 @@ const ProductCard = ({ product }: { product: import('../types').Product }) => {
       return;
     }
     const itemToAdd = selectedSize
-      ? { ...product, size: selectedSize, qty }
-      : { ...product, qty, size: '' };
+      ? { description: '', gallery: [], ...product, size: selectedSize, qty }
+      : { description: '', gallery: [], ...product, qty, size: '' };
 
     dispatch(addToCart(itemToAdd));
     setSelectedSize(null);
@@ -86,7 +87,7 @@ const ProductCard = ({ product }: { product: import('../types').Product }) => {
           {product.name}
         </Link>
         <p className={styles.subCategory}>{product.subCategory}</p>
-        <p className={styles.price}>PKR {product.price}</p>
+        <p className={styles.price}>{formatUSD(product.price)}</p>
         <div className={styles.actionWrapper}>
           {isAnyVariantInCart ? (
             <Link to="/cart">

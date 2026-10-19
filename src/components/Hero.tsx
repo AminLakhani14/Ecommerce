@@ -1,26 +1,14 @@
-import React from 'react';
-import { Button } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
+import { Link } from 'react-router-dom';
+import { FiArrowUpRight } from 'react-icons/fi';
 import styles from '../pages/styles/Hero.module.css';
 
-const Hero = () => {
-  return (
-    // The outer div IS the full-width background
-    <div className={styles.hero} 
-    style={{ backgroundImage: `url(${'https://assets.vogue.com/photos/6324cbb0563d9de75791b508/master/w_1920,c_limit/___collage_story.jpg'})` }}
-    >
-      {/* --- START: THIS IS THE FIX --- */}
-      {/* We use a standard div with a custom class for the centered content, INSTEAD of a Bootstrap <Container> */}
-      <div className={styles.heroContent}>
-        <h1 className="display-3 text-white">New Season Arrivals</h1>
-        <p className="lead text-white">Check out all the new trends for this season</p>
-        <LinkContainer to="/sale">
-          <Button variant="dark" size="lg">Shop Now</Button>
-        </LinkContainer>
-      </div>
-      {/* --- END: THIS IS THE FIX --- */}
-    </div>
-  );
-};
-
+const Hero = () => <section className={styles.hero} aria-label='The everyday edit'>
+  <div className={`${styles.heroContent} container`}>
+    <p className={styles.eyebrow}><span /> THE EVERYDAY EDIT</p>
+    <h1>Good style.<br /><em>Great finds.</em></h1>
+    <p className={styles.description}>A fresh perspective on the everyday.<br />Discover pieces that feel like you.</p>
+    <div className={styles.actions}><Link to='/sale' className={styles.primary}>Shop the edit <FiArrowUpRight /></Link><Link to='/about' className={styles.secondary}>Our story <FiArrowUpRight /></Link></div>
+    <div className={styles.footnote}><span>New Season Arrivals</span><span>YOUR EVERYDAY, ELEVATED.</span></div>
+  </div>
+</section>;
 export default Hero;

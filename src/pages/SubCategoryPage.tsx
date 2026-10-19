@@ -20,7 +20,7 @@ const SubCategoryPage = () => {
       ) : error ? (
         <Message variant='danger'>{getErrorMessage(error)}</Message>
       ) : (
-        <Row>
+        <Row className="product-grid">
           {!products || products.length === 0 ? (
             <Message>No products found in this sub-category yet.</Message>
           ) : (

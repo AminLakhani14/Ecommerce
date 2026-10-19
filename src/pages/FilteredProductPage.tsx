@@ -26,7 +26,7 @@ const FilteredProductPage = () => {
       ) : error ? (
         <Message variant='danger'>{getErrorMessage(error)}</Message>
       ) : (
-        <Row>
+        <Row className="product-grid">
           {!products || products.length === 0 ? (
             <Message>No products found for this filter.</Message>
           ) : (

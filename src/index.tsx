@@ -32,6 +32,7 @@ import SubCategoryPage from './pages/SubCategoryPage';
 import FilteredProductPage from './pages/FilteredProductPage';
 import ProfilePage from './pages/ProfilePage';
 import OrderListPage from './pages/Admin/OrderListPage';
+import SettingsPage from './pages/Admin/SettingsPage';
 import FAQPage from './pages/FAQ';
 
 const router = createBrowserRouter(
@@ -64,6 +65,7 @@ const router = createBrowserRouter(
         <Route path='/admin/product/create' element={<ProductCreatePage />} />
         <Route path='/admin/product/:id/edit' element={<ProductEditPage />} />
         <Route path='/admin/orderlist' element={<OrderListPage />} /> 
+        <Route path='/admin/settings' element={<SettingsPage />} />
       </Route>
     </Route>
   )

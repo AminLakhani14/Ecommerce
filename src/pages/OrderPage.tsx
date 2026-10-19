@@ -1,3 +1,4 @@
+import { formatUSD } from '../utils/currency';
 import { productImageUrl } from '../utils/productImage';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { Link, useParams } from "react-router-dom";
@@ -148,8 +149,8 @@ const OrderPage = () => {
                           <div>Size: {item.size}</div>
                         </Col>
                         <Col md={4} className="text-md-end">
-                          {item.qty} x PKR {item.price} ={" "}
-                          <strong>PKR {item.qty * item.price}</strong>
+                          {item.qty} x {formatUSD(item.price)} ={" "}
+                          <strong>{formatUSD(item.qty * item.price)}</strong>
                         </Col>
                       </Row>
                     </ListGroup.Item>
@@ -166,13 +167,13 @@ const OrderPage = () => {
                   <ListGroup.Item>
                     <Row>
                       <Col>Items</Col>
-                      <Col>PKR {order.itemsPrice}</Col>
+                      <Col>{formatUSD(order.itemsPrice)}</Col>
                     </Row>
                   </ListGroup.Item>
                   <ListGroup.Item>
                     <Row>
                       <Col>Shipping</Col>
-                      <Col>PKR {order.shippingPrice}</Col>
+                      <Col>{formatUSD(order.shippingPrice)}</Col>
                     </Row>
                   </ListGroup.Item>
                   <ListGroup.Item>
@@ -181,7 +182,7 @@ const OrderPage = () => {
                         <strong>Total</strong>
                       </Col>
                       <Col>
-                        <strong>PKR {order.totalPrice}</strong>
+                        <strong>{formatUSD(order.totalPrice)}</strong>
                       </Col>
                     </Row>
                   </ListGroup.Item>

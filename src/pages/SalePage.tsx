@@ -20,7 +20,7 @@ const SalePage = () => {
     <Container className="my-5">
       <h1 className="mb-4">On Sale</h1>
       {isLoading ? <Loader /> : error ? <Message variant='danger'>{getErrorMessage(error)}</Message> : (
-        <Row>
+        <Row className="product-grid">
           {filteredProducts.map((product) => (
             <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
               <ProductCard product={product} />
