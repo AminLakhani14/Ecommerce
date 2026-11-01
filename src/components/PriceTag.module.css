@@ -1,0 +1,11 @@
+.priceTag { display:inline-flex; align-items:baseline; flex-wrap:wrap; gap:4px 8px; }
+.current,.sale { font-weight:600; color:#263d2e; }
+.sale { color:#b23b31; }
+.original { color:#8b948d; font-weight:400; text-decoration-thickness:1px; }
+.badge { align-self:center; padding:2px 7px; border-radius:999px; background:#fbe9e6; color:#b23b31; font-size:11px; font-weight:700; letter-spacing:.02em; }
+.sm .current,.sm .sale { font-size:14px; }
+.sm .original { font-size:12px; }
+.lg { gap:6px 12px; }
+.lg .current,.lg .sale { font-size:28px; font-weight:650; letter-spacing:-.02em; }
+.lg .original { font-size:17px; }
+.lg .badge { font-size:12px; padding:4px 10px; }
