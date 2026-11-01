@@ -2,6 +2,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import type { CartState, CartItem, ShippingAddress } from '../../types';
 import { createSlice } from '@reduxjs/toolkit';
 import { updateCart } from '../../utils/cartUtils';
+import { getPricing } from '../../utils/pricing';
 
 const initialState: CartState = localStorage.getItem('cart')
   ? JSON.parse(localStorage.getItem('cart')!)
@@ -12,7 +13,8 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart: (state, action: PayloadAction<CartItem>) => {
-      const itemToAdd = action.payload;
+      const { original, current } = getPricing(action.payload);
+      const itemToAdd = { ...action.payload, price: current, originalPrice: original };
       if (itemToAdd.variants && itemToAdd.variants.length > 0 && !itemToAdd.size) {
         return state; 
       }

@@ -1,4 +1,5 @@
-import { formatUSD } from '../utils/currency';
+import PriceTag from './PriceTag';
+import { productPath } from '../utils/productPath';
 import { productImageUrl } from '../utils/productImage';
 import { useState, useEffect } from "react";
 import { Button, Row, Col } from "react-bootstrap";
@@ -57,7 +58,7 @@ const ProductCard = ({ product }: { product: import('../types').ProductSummary }
   return (
     <div className={`${styles.card} d-flex`}>
       <div className={styles.imageWrapper}>
-        <Link to={`/product/${product._id}`}>
+        <Link to={productPath(product)}>
           <img
             src={productImageUrl(product.image)}
             alt={product.name}
@@ -83,11 +84,11 @@ const ProductCard = ({ product }: { product: import('../types').ProductSummary }
         )}
       </div>
       <div className={styles.infoWrapper}>
-        <Link to={`/product/${product._id}`} className={styles.productName}>
+        <Link to={productPath(product)} className={styles.productName}>
           {product.name}
         </Link>
         <p className={styles.subCategory}>{product.subCategory}</p>
-        <p className={styles.price}>{formatUSD(product.price)}</p>
+        <p className={styles.price}><PriceTag product={product} /></p>
         <div className={styles.actionWrapper}>
           {isAnyVariantInCart ? (
             <Link to="/cart">

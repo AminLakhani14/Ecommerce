@@ -15,7 +15,7 @@
   }
   
   .tabNav .nav-link.active {
-    background-color: #007bff !important; /* Bootstrap primary blue */
+    background-color: #315f43 !important; /* Store theme green */
     color: white !important;
   }
   

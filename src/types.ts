@@ -1,16 +1,19 @@
 export interface Variant { size: string; stock: number }
 export interface Product {
-  _id: string; name: string; image: string; gallery: string[]; description: string;
-  category: string | string[]; subCategory: string; price: number; countInStock: number;
+  _id: string; name: string; slug?: string; image: string; gallery: string[]; description: string;
+  category: string | string[]; subCategory: string; price: number; salePrice?: number; countInStock: number;
   isOnSale: boolean; isActive: boolean; variants: Variant[];
 }
+export interface Review { _id: string; name: string; rating: number; title?: string; comment: string; createdAt: string }
+export interface ProductReviews { reviews: Review[]; numReviews: number; rating: number; distribution: number[] }
+export interface ReviewEligibility { canReview: boolean; reason: 'reviewed' | 'not-purchased' | null }
 export interface UserInfo { _id: string; name: string; email: string; isAdmin: boolean; token?: string }
 export type ProductSummary = Omit<Product, 'description' | 'gallery'>;
 export interface ShippingAddress {
   email: string; firstName: string; lastName: string; address: string; city: string;
   state: string; postalCode: string; country: string; phone: string;
 }
-export interface CartItem extends Product { qty: number; size: string }
+export interface CartItem extends Product { qty: number; size: string; originalPrice?: number }
 export interface CartState {
   cartItems: CartItem[]; shippingAddress: Partial<ShippingAddress>;
   itemsPrice: number; shippingPrice: number; taxPrice: number; totalPrice: string;
@@ -21,7 +24,7 @@ export interface OrderInput {
 }
 export interface Order extends Omit<OrderInput, 'orderItems' | 'totalPrice'> {
   _id: string; user: UserInfo | null; totalPrice: number;
-  orderItems: Array<Pick<CartItem, 'name' | 'qty' | 'size' | 'price' | 'image'> & { product: string }>;
+  orderItems: Array<Pick<CartItem, 'name' | 'qty' | 'size' | 'price' | 'image'> & { product: string; originalPrice?: number }>;
   isPaid: boolean; paidAt?: string; isDelivered: boolean; deliveredAt?: string;
   isCancelled: boolean; createdAt: string;
 }

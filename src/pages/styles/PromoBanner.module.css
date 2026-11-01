@@ -1,9 +1,0 @@
-.banner { position: relative; min-height: 340px; border-radius: 12px; background: #243b2d; color: white; overflow: hidden; display: flex; align-items: center; margin: 5px 0 30px; }
-.banner>img { position: absolute; inset: 0; height: 100%; width: 100%; object-fit: cover; object-position: center 40%; }
-.banner::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg,#172b23e8,#172b2385 60%,#172b2320); }
-.content { position: relative; z-index: 1; padding: 44px 56px; max-width: 670px; }
-.content h2 { font: 400 clamp(35px,3.6vw,57px)/1.1 Georgia,serif; letter-spacing: -.04em; margin-bottom: 18px; }
-.content>p:not(:first-child) { color: #dce4db; line-height: 1.7; max-width: 400px; font-size: 14px; }
-.actions a { display: inline-flex; align-items: center; justify-content: space-between; gap: 40px; padding: 12px 0 6px; border-bottom: 1px solid #ffffff85; color: white; text-decoration: none; font-size: 13px; font-weight: 600; }
-.note { position: absolute; z-index: 1; right: 40px; bottom: 35px; font-size: 10px; letter-spacing: .2em; }
-@media(max-width:600px) { .content { padding: 32px 25px; } .banner { min-height: 350px; } .note { display: none; } }

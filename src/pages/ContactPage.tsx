@@ -21,7 +21,7 @@ const ContactPage = () => {
               </div>
               <div className="d-flex align-items-center my-3">
                 <FaEnvelope size={24} className="me-3 text-primary" />
-                <span>support@agstore.com</span>
+                <span>support@sbrfashion.com</span>
               </div>
             </Card.Body>
           </Card>

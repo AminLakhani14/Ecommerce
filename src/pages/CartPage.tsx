@@ -4,6 +4,8 @@ import { FiArrowLeft, FiArrowRight, FiShoppingBag, FiTrash2, FiTruck } from 'rea
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { addToCart, removeFromCart } from '../redux/slices/cartSlice';
 import { formatUSD } from '../utils/currency';
+import PriceTag from '../components/PriceTag';
+import { productPath } from '../utils/productPath';
 import { FREE_SHIPPING_THRESHOLD } from '../utils/cartUtils';
 import { productImageUrl } from '../utils/productImage';
 import QuantityCounter from '../components/QuantityCounter';
@@ -34,9 +36,9 @@ export default function CartPage() {
             {cart.cartItems.map(item=>{
               const stock=item.variants.find(variant=>variant.size===item.size)?.stock||0;
               return <li className={styles.cartItem} key={`${item._id}-${item.size}`}>
-                <Link to={`/product/${item._id}`} className={styles.cartImage}><img src={productImageUrl(item.image)} alt={item.name} /></Link>
-                <div className={styles.productInfo}>{item.subCategory&&<p className={styles.productType}>{item.subCategory}</p>}<Link to={`/product/${item._id}`} className={styles.productName}>{item.name}</Link>
-                  <div className={styles.meta}><span className={styles.chip}><small>Size</small>{item.size||'Standard'}</span><span>{formatUSD(item.price)} each</span>{stock>0&&stock<=3&&<span className={styles.lowStock}>Only {stock} left</span>}</div>
+                <Link to={productPath(item)} className={styles.cartImage}><img src={productImageUrl(item.image)} alt={item.name} /></Link>
+                <div className={styles.productInfo}>{item.subCategory&&<p className={styles.productType}>{item.subCategory}</p>}<Link to={productPath(item)} className={styles.productName}>{item.name}</Link>
+                  <div className={styles.meta}><span className={styles.chip}><small>Size</small>{item.size||'Standard'}</span><span><PriceTag product={{ ...item, isOnSale: true, salePrice: item.price }} showBadge={false} /> each</span>{stock>0&&stock<=3&&<span className={styles.lowStock}>Only {stock} left</span>}</div>
                   <div className={styles.stepper}><QuantityCounter value={item.qty} setValue={qty=>dispatch(addToCart({...item,qty}))} max={stock} /></div></div>
                 <div className={styles.itemActions}><strong>{formatUSD(item.price*item.qty)}</strong><button type='button' aria-label={`Remove ${item.name} (${item.size})`} onClick={()=>dispatch(removeFromCart({id:item._id,size:item.size}))}><FiTrash2 /> Remove</button></div>
               </li>;

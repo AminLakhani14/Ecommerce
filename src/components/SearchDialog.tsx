@@ -1,4 +1,3 @@
-import { formatUSD } from '../utils/currency';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Modal, Form } from 'react-bootstrap';
@@ -7,6 +6,8 @@ import { useGetProductsQuery } from '../redux/slices/productsApiSlice';
 import { productImageUrl } from '../utils/productImage';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import Loader from './Loader';
+import PriceTag from './PriceTag';
+import { productPath } from '../utils/productPath';
 
 export default function SearchDialog({ show, onHide }: { show: boolean; onHide: () => void }) {
   const [term, setTerm] = useState('');
@@ -17,8 +18,8 @@ export default function SearchDialog({ show, onHide }: { show: boolean; onHide: 
     <Modal.Body>
       <div className='search-field'><FiSearch /><Form.Control aria-label='Search products' autoFocus placeholder='Search bags, clothing, accessories…' value={term} onChange={event => setTerm(event.target.value)} /></div>
       {!term.trim() ? <p className='search-hint'>A wardrobe essential or something a little unexpected. What are you looking for?</p> : isLoading ? <Loader /> : error ? <p role='alert'>{getErrorMessage(error)}</p> : matches.length ? <div className='search-results'>
-        {matches.map(product => <Link key={product._id} to={`/product/${product._id}`} onClick={onHide}>
-          <img src={productImageUrl(product.image)} alt='' /><span><strong>{product.name}</strong><small>{product.subCategory} · {formatUSD(product.price)}</small></span><FiArrowUpRight />
+        {matches.map(product => <Link key={product._id} to={productPath(product)} onClick={onHide}>
+          <img src={productImageUrl(product.image)} alt='' /><span><strong>{product.name}</strong><small>{product.subCategory} · <PriceTag product={product} showBadge={false} /></small></span><FiArrowUpRight />
         </Link>)}
       </div> : <p className='search-hint'>No products found for “{term}”. Try another name or category.</p>}
     </Modal.Body>

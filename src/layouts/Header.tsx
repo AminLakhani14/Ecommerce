@@ -1,19 +1,44 @@
+import BrandLogo from '../components/BrandLogo';
 import SearchDialog from '../components/SearchDialog';
 import { FiSearch } from 'react-icons/fi';
 import { useGetCategoriesQuery } from '../redux/slices/categoriesApiSlice';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Navbar, Nav, Container, NavDropdown, Badge } from 'react-bootstrap';
 import { FaUser, FaShoppingCart } from 'react-icons/fa';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useAppDispatch as useDispatch, useAppSelector as useSelector } from '../redux/hooks';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useLogoutMutation } from '../redux/slices/usersApiSlice';
 import { logout } from '../redux/slices/authSlice';
-// import logo from '../assets/images/logo.png';
 import MegaMenu from '../components/MegaMenu';
 import { megaMenuData } from '../data/menuData';
 
 const Header = () => {
+  const { pathname } = useLocation();
+  const headerRef = useRef<HTMLElement>(null);
+  const [scrolled, setScrolled] = useState(window.scrollY > 24);
+
+  useEffect(() => {
+    const updateScroll = () => setScrolled(window.scrollY > 24);
+    updateScroll();
+    window.addEventListener('scroll', updateScroll, { passive: true });
+    return () => window.removeEventListener('scroll', updateScroll);
+  }, []);
+
+  useEffect(() => {
+    const header = headerRef.current;
+    if (!header) return;
+    const updateHeight = () => document.documentElement.style.setProperty('--store-header-height', `${header.getBoundingClientRect().height}px`);
+    updateHeight();
+    const observer = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(updateHeight) : null;
+    observer?.observe(header);
+    window.addEventListener('resize', updateHeight);
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener('resize', updateHeight);
+      document.documentElement.style.removeProperty('--store-header-height');
+    };
+  }, []);
   const { data: categories = [] } = useGetCategoriesQuery();
   const { cartItems } = useSelector((state) => state.cart);
   const { userInfo } = useSelector((state) => state.auth);
@@ -78,8 +103,8 @@ const Header = () => {
   // --- END: NEW, SMARTER EVENT HANDLERS ---
 
   return (
-    <header className='store-header' onMouseLeave={handleMouseLeave}>
-      <div className='announcement-bar'><div className='container'><span>THE EVERYDAY EDIT</span><span>Considered essentials. Effortless style.</span><LinkContainer to='/about'><a>Discover AG-Store</a></LinkContainer></div></div>
+    <header ref={headerRef} className={`store-header${pathname === '/' ? ' landing-header' : ''}${scrolled ? ' is-scrolled' : ''}`} onMouseLeave={handleMouseLeave}>
+      <div className='announcement-bar'><div className='container'><span>THE EVERYDAY EDIT</span><span>Considered essentials. Effortless style.</span><LinkContainer to='/about'><a>Discover Sbrfashion</a></LinkContainer></div></div>
       <Navbar 
         bg="light" 
         variant="light" 
@@ -91,8 +116,7 @@ const Header = () => {
         <Container>
           <LinkContainer to='/' onClick={closeAllMenus}>
             <Navbar.Brand>
-              {/* <img src={logo} alt='AG-Store' style={{ height: '40px', marginRight: '10px' }} />  */}
-              <span className='brand-mark' aria-hidden='true'>AG</span><strong>AG-Store</strong>
+              <BrandLogo /><strong>Sbrfashion</strong>
             </Navbar.Brand>
           </LinkContainer>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />

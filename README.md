@@ -1,4 +1,4 @@
-# AG Store frontend
+# Sbrfashion frontend
 
 React + TypeScript, compiled with Vite. Use Node.js **26.12.0** (Current), pinned in `.nvmrc` and `.node-version`. With fnm, run `fnm install` and `fnm use` in this directory.
 

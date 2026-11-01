@@ -1,4 +1,3 @@
-import { formatUSD } from '../../utils/currency';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Form } from 'react-bootstrap';
@@ -8,6 +7,7 @@ import { productCategories } from '../../utils/categories';
 import { productImageUrl } from '../../utils/productImage';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 import Loader from '../../components/Loader';
+import PriceTag from '../../components/PriceTag';
 import Message from '../../components/Message';
 import MessageModal from '../../components/MessageModal';
 import type { Product } from '../../types';
@@ -57,7 +57,7 @@ export default function ProductListPage() {
             <td><span className={`status-pill ${(product.isActive === false || !productCategories(product.category).length) ? 'neutral' : 'green'}`}><i />{(product.isActive === false || !productCategories(product.category).length) ? 'Hidden' : 'Active'}</span></td>
             <td><span className={`inventory-value ${stock(product) === 0 ? 'empty' : stock(product) < 6 ? 'low' : ''}`}><i />{stock(product) > 0 ? `${stock(product)} available` : 'Out of stock'}</span><small className='inventory-options'>{product.variants.length} option{product.variants.length === 1 ? '' : 's'}</small></td>
             <td><div className='category-chips'>{productCategories(product.category).length ? productCategories(product.category).map(name => <span key={name}>{name}</span>) : <span>No category assigned</span>}</div></td>
-            <td><strong className='catalog-price'>{formatUSD(product.price)}</strong>{product.isOnSale && <small className='sale-note'><FiTag /> On sale</small>}</td>
+            <td><strong className='catalog-price'><PriceTag product={product} showBadge={false} /></strong>{product.isOnSale && <small className='sale-note'><FiTag /> On sale</small>}</td>
             <td><div className='row-actions'><Link to={`/admin/product/${product._id}/edit`} className='icon-button' aria-label={`Edit ${product.name}`} title='Edit product'><FiEdit2 /></Link><button className='icon-button danger' aria-label={`Delete ${product.name}`} title='Delete product' disabled={isDeleting} onClick={() => { setDeleteError(''); setPendingDelete(product); }}><FiTrash2 /></button></div></td>
           </tr>)}
         </tbody></table></div>

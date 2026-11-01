@@ -17,5 +17,19 @@ test('a compact homepage card can still add a complete cart item', async () => {
   await waitFor(() => expect(screen.getByRole('button', { name: 'Add to Cart' })).toBeEnabled());
   expect(screen.getByText(/USD\s+20\.00/)).toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: 'Add to Cart' }));
-  expect(store.getState().cart.cartItems).toEqual([{ ...product, description: '', gallery: [], size: 'One Size', qty: 1 }]);
+  expect(store.getState().cart.cartItems).toEqual([{ ...product, description: '', gallery: [], size: 'One Size', qty: 1, originalPrice: 20 }]);
+});
+
+test('a sale card shows the regular price crossed out and charges the sale price', async () => {
+  const product: ProductSummary = { _id: 'sale-product', name: 'Watch', image: 'https://example.com/watch.jpg',
+    category: ['Accessories'], subCategory: 'Watches', price: 100, salePrice: 75, countInStock: 1, isOnSale: true, isActive: true,
+    variants: [{ size: 'One Size', stock: 1 }] };
+  render(<Provider store={store}><MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><ProductCard product={product} /></MemoryRouter></Provider>);
+  await waitFor(() => expect(screen.getByRole('button', { name: 'Add to Cart' })).toBeEnabled());
+  expect(screen.getByText(/USD\s+75\.00/)).toBeInTheDocument();
+  expect(screen.getByText(/USD\s+100\.00/).tagName).toBe('S');
+  expect(screen.getByText('-25%')).toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: 'Add to Cart' }));
+  expect(store.getState().cart.cartItems[0]).toMatchObject({ price: 75, originalPrice: 100 });
+  expect(store.getState().cart.itemsPrice).toBe(75);
 });

@@ -1,21 +1,21 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Sbrfashion",
+  "name": "Sbrfashion",
   "icons": [
     {
-      "src": "AG1.jpg",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/jpg"
+      "src": "sbrfashion-logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
     },
     {
-      "src": "AG1.jpg",
-      "type": "image/jpg",
-      "sizes": "192x192"
+      "src": "sbrfashion-logo.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
     },
     {
-      "src": "AG1.jpg",
-      "type": "image/jpg",
-      "sizes": "512x512"
+      "src": "sbrfashion-logo.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
     }
   ],
   "start_url": ".",

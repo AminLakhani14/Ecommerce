@@ -149,7 +149,11 @@ const OrderPage = () => {
                           <div>Size: {item.size}</div>
                         </Col>
                         <Col md={4} className="text-md-end">
-                          {item.qty} x {formatUSD(item.price)} ={" "}
+                          {item.qty} x{" "}
+                          {item.originalPrice != null && item.originalPrice > item.price && (
+                            <s className="text-muted me-1">{formatUSD(item.originalPrice)}</s>
+                          )}
+                          {formatUSD(item.price)} ={" "}
                           <strong>{formatUSD(item.qty * item.price)}</strong>
                         </Col>
                       </Row>

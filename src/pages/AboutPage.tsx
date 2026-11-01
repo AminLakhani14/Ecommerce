@@ -6,7 +6,7 @@ export default function AboutPage() {
   return <>
     <section className={styles.hero}>
       <Container>
-        <p className={styles.eyebrow}>A little about AG-Store</p>
+        <p className={styles.eyebrow}>A little about Sbrfashion</p>
         <h1>Everyday style.<br />Your own way.</h1>
         <p className={styles.intro}>Clothing you reach for. Accessories that feel like you. Backpacks that go wherever life takes you.</p>
       </Container>
@@ -19,7 +19,7 @@ export default function AboutPage() {
         <Col md={6}>
           <p className={styles.eyebrow}>Our story</p>
           <h2 className='mb-4'>Good style starts<br />with feeling yourself.</h2>
-          <p>AG-Store brings clothing, accessories, and backpacks together in one place, making it easier to build a wardrobe around the way you live.</p>
+          <p>Sbrfashion brings clothing, accessories, and backpacks together in one place, making it easier to build a wardrobe around the way you live.</p>
           <p className='text-muted'>We believe the best pieces are the ones you make your own. Explore everyday staples, discover a new favorite, or find that finishing touch for your next outfit.</p>
           <Link to='/category/clothing' className='btn btn-dark mt-2 px-4 py-2'>Explore clothing</Link>
         </Col>

@@ -11,7 +11,7 @@ const App = () => {
   const { pathname } = useLocation();
   if (pathname.startsWith('/admin/')) return <><ScrollToTop /><AdminShell><Outlet /></AdminShell></>;
   return (
-    <div className="d-flex flex-column min-vh-100">
+    <div className={`d-flex flex-column min-vh-100${pathname === '/' ? ' home-layout' : ''}`}>
       <ScrollToTop />
       <Header />
       <SiteBreadcrumbs />

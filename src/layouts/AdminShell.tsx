@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { FiArrowUpRight, FiBox, FiChevronRight, FiGrid, FiSettings, FiShoppingBag } from 'react-icons/fi';
 import { useAppSelector } from '../redux/hooks';
 import Breadcrumbs, { routeCrumbs } from '../components/Breadcrumbs';
+import BrandLogo from '../components/BrandLogo';
 
 export default function AdminShell({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
@@ -14,7 +15,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
   ];
   return <div className='admin-shell'>
     <aside className='admin-sidebar'>
-      <Link to='/' className='admin-brand'><span className='brand-mark'>AG</span><span>AG-Store<small>ADMIN WORKSPACE</small></span></Link>
+      <Link to='/' className='admin-brand'><BrandLogo /><span>Sbrfashion<small>ADMIN WORKSPACE</small></span></Link>
       <div className='workspace-label'><FiGrid /> Store management</div>
       <nav aria-label='Admin navigation' className='admin-nav'>
         {links.map(item => <Link key={item.to} to={item.to} className={item.active ? 'active' : ''} aria-current={item.active ? 'page' : undefined}><item.icon />{item.label}{item.active && <FiChevronRight className='nav-chevron' />}</Link>)}

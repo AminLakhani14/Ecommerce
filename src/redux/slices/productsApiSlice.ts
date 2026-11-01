@@ -1,4 +1,4 @@
-import type { Product, ProductSummary } from '../../types';
+import type { Product, ProductReviews, ProductSummary, ReviewEligibility } from '../../types';
 import { apiSlice } from './apiSlice';
 
 export const productsApiSlice = apiSlice.injectEndpoints({
@@ -72,6 +72,26 @@ export const productsApiSlice = apiSlice.injectEndpoints({
       }),
       providesTags: ['Product'],
     }),
+    getProductReviews: builder.query<ProductReviews, string>({
+      query: (productId) => ({ url: `/api/products/${productId}/reviews` }),
+      providesTags: (result, error, id) => [{ type: 'Review', id }],
+    }),
+    getReviewEligibility: builder.query<ReviewEligibility, string>({
+      query: (productId) => ({ url: `/api/products/${productId}/reviews/eligibility` }),
+      providesTags: (result, error, id) => [{ type: 'Review', id }],
+    }),
+    createReview: builder.mutation<unknown, { productId: string; rating: number; title: string; comment: string }>({
+      query: ({ productId, ...body }) => ({
+        url: `/api/products/${productId}/reviews`,
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: (result, error, { productId }) => [{ type: 'Review', id: productId }],
+    }),
+    getRelatedProducts: builder.query<ProductSummary[], string>({
+      query: (productId) => ({ url: `/api/products/${productId}/related` }),
+      providesTags: ['Product'],
+    }),
     // --- END: ADDED NEW ENDPOINTS ---
   }),
 });
@@ -89,5 +109,9 @@ export const {
   useGetProductsByCategoryQuery,
   useGetSaleProductsQuery,
   useGetProductsBySubCategoryQuery,
-  useGetProductsByFilterQuery, 
+  useGetProductsByFilterQuery,
+  useGetProductReviewsQuery,
+  useGetReviewEligibilityQuery,
+  useCreateReviewMutation,
+  useGetRelatedProductsQuery,
 } = productsApiSlice;

@@ -62,6 +62,13 @@ const OrderListPage = () => {
   const completedOrders = orders ? orders.filter(order => order.isDelivered) : [];
   const cancelledOrders = orders ? orders.filter(order => order.isCancelled) : [];
 
+  // First item's name, plus a count of the rest, e.g. "Classic Aviator Sunglasses +2 more".
+  const orderProducts = (order: import('../../types').Order) => {
+    const [first, ...rest] = order.orderItems;
+    if (!first) return '—';
+    return rest.length ? `${first.name} +${rest.length} more` : first.name;
+  };
+
   // --- START: NEW RESPONSIVE RENDER LOGIC ---
   const renderOrderList = (orderList: import('../../types').Order[], tabType: string) => (
     <>
@@ -69,12 +76,12 @@ const OrderListPage = () => {
       <div className="d-none d-md-block">
         <Table striped bordered hover responsive className='table-sm'>
           <thead>
-            <tr><th>ID</th><th>USER</th><th>DATE</th><th>TOTAL</th><th>PAID</th>{tabType !== 'cancelled' && <th>ACTIONS</th>}</tr>
+            <tr><th>PRODUCTS</th><th>USER</th><th>DATE</th><th>TOTAL</th><th>PAID</th>{tabType !== 'cancelled' && <th>ACTIONS</th>}</tr>
           </thead>
           <tbody>
             {orderList.map((order) => (
               <tr key={order._id}>
-                <td>{order._id}</td>
+                <td title={order.orderItems.map(item => `${item.name} × ${item.qty}`).join(', ')}>{orderProducts(order)}</td>
                 <td>{order.user?.name || 'N/A'}</td>
                 <td>{order.createdAt.substring(0, 10)}</td>
                 <td>{formatUSD(order.totalPrice)}</td>
@@ -101,7 +108,7 @@ const OrderListPage = () => {
         {orderList.map((order) => (
           <div key={order._id} className={styles.orderCard}>
             <div className={styles.cardHeader}>
-              <span className={styles.orderId}>ID: {order._id.substring(order._id.length - 6)}</span>
+              <span className={styles.orderId}>{orderProducts(order)}</span>
               <span className={styles.orderDate}>{order.createdAt.substring(0, 10)}</span>
             </div>
             <div className={styles.cardBody}>

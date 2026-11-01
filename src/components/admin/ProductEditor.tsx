@@ -1,4 +1,4 @@
-import { formatUSD } from '../../utils/currency';
+import PriceTag from '../PriceTag';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Form } from 'react-bootstrap';
@@ -24,6 +24,8 @@ export default function ProductEditor({ product, busy, onSubmit, onValidationErr
   const [subCategory, setSubCategory] = useState(product?.subCategory || '');
   const [price, setPrice] = useState(product ? String(product.price) : '');
   const [isOnSale, setIsOnSale] = useState(product?.isOnSale || false);
+  const [salePrice, setSalePrice] = useState(product?.salePrice != null ? String(product.salePrice) : '');
+  const salePriceInvalid = salePrice !== '' && price !== '' && (Number(salePrice) < 0 || Number(salePrice) >= Number(price));
   const [imageUrl, setImageUrl] = useState(product && /^https?:\/\//i.test(product.image) ? product.image : '');
   const [gallery, setGallery] = useState<File[]>([]);
   const [uploadUrls, setUploadUrls] = useState<string[]>([]);
@@ -52,12 +54,13 @@ export default function ProductEditor({ product, busy, onSubmit, onValidationErr
     if (!category.length) return onValidationError('Select at least one category.');
     if (!name.trim() || !description.trim() || !subCategory) return onValidationError('Complete the product name, description, and sub-category.');
     if (price === '' || !Number.isFinite(Number(price)) || Number(price) < 0) return onValidationError('Enter a valid product price.');
+    if (salePrice !== '' && (!Number.isFinite(Number(salePrice)) || Number(salePrice) < 0 || Number(salePrice) >= Number(price))) return onValidationError('Sale price must be lower than the regular price.');
     if (!validVariants.length || variants.some(variant => !variant.size.trim() || !Number.isSafeInteger(variant.stock) || variant.stock < 0)) return onValidationError('Give every variant a size or option and a valid stock quantity.');
     if (new Set(validVariants.map(variant => variant.size.trim().toLowerCase())).size !== validVariants.length) return onValidationError('Each variant must have a unique size or option.');
     if (!previews.length) return onValidationError('Add an image URL or upload a product image.');
     if (imageUrl.trim() && !/^https?:\/\//i.test(imageUrl.trim())) return onValidationError('Use an HTTP or HTTPS image URL.');
     const data = new FormData();
-    Object.entries({ name: name.trim(), description: description.trim(), price, category: JSON.stringify(category), subCategory, countInStock: String(totalStock), isOnSale: String(isOnSale), variants: JSON.stringify(validVariants.map(variant => ({ ...variant, size: variant.size.trim() }))) }).forEach(([key, value]) => data.set(key, value));
+    Object.entries({ name: name.trim(), description: description.trim(), price, category: JSON.stringify(category), subCategory, countInStock: String(totalStock), isOnSale: String(isOnSale), salePrice, variants: JSON.stringify(validVariants.map(variant => ({ ...variant, size: variant.size.trim() }))) }).forEach(([key, value]) => data.set(key, value));
     if (imageUrl.trim()) data.set('imageUrl', imageUrl.trim());
     gallery.forEach(file => data.append('gallery', file));
     await onSubmit(data);
@@ -83,7 +86,8 @@ export default function ProductEditor({ product, busy, onSubmit, onValidationErr
               <Form.Group controlId='product-image-url'><Form.Label>Image URL</Form.Label><Form.Control type='url' value={imageUrl} onChange={event => setImageUrl(event.target.value)} placeholder='https://example.com/product.jpg' /><Form.Text>{editing ? 'New uploads replace the current gallery when you save.' : 'The first uploaded image becomes your product cover.'}</Form.Text></Form.Group>
             </section>
             <section className='editor-card'><div className='editor-card-heading'><span className='section-number'>03</span><div><h2>Pricing & inventory</h2><p>Set the price and available options.</p></div></div>
-              <div className='pricing-grid'><Form.Group controlId='product-price'><Form.Label>Price <span className='required-mark'>*</span></Form.Label><div className='currency-input'><span>USD</span><Form.Control type='number' min='0' step='0.01' required placeholder='0.00' value={price} onChange={event => setPrice(event.target.value)} /></div></Form.Group><div className='stock-summary'><span>Total available stock</span><strong>{totalStock}<small> units</small></strong></div></div>
+              <div className='pricing-grid with-sale'><Form.Group controlId='product-price'><Form.Label>Price <span className='required-mark'>*</span></Form.Label><div className='currency-input'><span>USD</span><Form.Control type='number' min='0' step='0.01' required placeholder='0.00' value={price} onChange={event => setPrice(event.target.value)} /></div></Form.Group><Form.Group controlId='product-sale-price'><Form.Label>Sale price <span className='optional-mark'>(optional)</span></Form.Label><div className='currency-input'><span>USD</span><Form.Control type='number' min='0' step='0.01' placeholder='0.00' value={salePrice} isInvalid={salePriceInvalid} onChange={event => { setSalePrice(event.target.value); if (event.target.value !== '') setIsOnSale(true); }} /></div></Form.Group><div className='stock-summary'><span>Total available stock</span><strong>{totalStock}<small> units</small></strong></div></div>
+              <p className={`sale-price-hint ${salePriceInvalid ? 'invalid' : ''}`}>{salePriceInvalid ? 'Sale price must be lower than the regular price.' : 'Leave sale price empty for no discount. When set, customers see the regular price crossed out.'}</p>
               <div className='variants-heading'><div><h3>Product variants</h3><p>Use “One Size” for products with a single option.</p></div><button type='button' className='text-button' onClick={() => setVariants(current => [...current, { size: '', stock: 0 }])}><FiPlus /> Add Variant</button></div>
               <div className='variant-list'>{variants.map((variant, index) => <div className='variant-row' key={index}>
                 <Form.Group controlId={`variant-size-${index}`}><Form.Label>Option / size</Form.Label><Form.Control required placeholder='e.g., M, 42, One Size' value={variant.size} onChange={event => changeVariant(index, 'size', event.target.value)} /></Form.Group>
@@ -97,7 +101,7 @@ export default function ProductEditor({ product, busy, onSubmit, onValidationErr
               <Form.Group controlId='product-subcategory' className='mt-4'><Form.Label>Sub-Category <span className='required-mark'>*</span></Form.Label><Form.Select required value={subCategory} onChange={event => setSubCategory(event.target.value)}><option value='' disabled>Select a product type</option>{[...new Set([...types, ...(subCategory ? [subCategory] : [])])].map(option => <option key={option}>{option}</option>)}</Form.Select></Form.Group>
               <div className='sale-toggle'><div><strong>Feature in Sale</strong><p>Show this product in the sale collection.</p></div><Form.Check type='switch' id='product-on-sale' label='On Sale' className='sale-switch' checked={isOnSale} onChange={event => setIsOnSale(event.target.checked)} /></div>
             </section>
-            <section className='editor-card preview-card'><div className='editor-card-heading'><h2>Live preview</h2><span className='quiet-badge'>STOREFRONT</span></div><PreviewImage key={previews[0] || 'empty'} src={previews[0]} alt={name || 'Product preview'} /><div className='preview-information'><span>{category.length ? category.join(' / ') : 'YOUR COLLECTION'}</span><h3>{name || 'Your product title'}</h3><p>{subCategory || 'Product type'}</p><strong>{formatUSD(price || 0)}</strong>{isOnSale && <span className='status-pill sale'>On sale</span>}</div></section>
+            <section className='editor-card preview-card'><div className='editor-card-heading'><h2>Live preview</h2><span className='quiet-badge'>STOREFRONT</span></div><PreviewImage key={previews[0] || 'empty'} src={previews[0]} alt={name || 'Product preview'} /><div className='preview-information'><span>{category.length ? category.join(' / ') : 'YOUR COLLECTION'}</span><h3>{name || 'Your product title'}</h3><p>{subCategory || 'Product type'}</p><strong><PriceTag product={{ price: Number(price) || 0, isOnSale, salePrice: salePrice === '' ? undefined : Number(salePrice) }} /></strong>{isOnSale && <span className='status-pill sale'>On sale</span>}</div></section>
             <section className='editor-checklist'><div><FiCheckCircle /><strong>Ready for your storefront</strong><span>{checks.filter(check => check.done).length}/{checks.length}</span></div><ul>{checks.map(check => <li key={check.label} className={check.done ? 'complete' : ''}><span>{check.done && <FiCheck />}</span>{check.label}</li>)}</ul></section>
           </aside>
         </div>

@@ -19,7 +19,7 @@ afterEach(() => { cleanup(); store.dispatch(logout()); });
 
 test('renders the store layout with navigation and an empty cart', () => {
   render(<Provider store={store}><MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><App /></MemoryRouter></Provider>);
-  expect(screen.getByRole('link', { name: 'AG-Store' })).toHaveAttribute('href', '/');
+  expect(screen.getByRole('link', { name: 'Sbrfashion' })).toHaveAttribute('href', '/');
   expect(screen.getByRole('link', { name: /cart/i })).toHaveAttribute('href', '/cart');
   expect(screen.getByRole('link', { name: /sign in/i })).toHaveAttribute('href', '/login');
   const navigation = within(screen.getByRole('navigation'));
