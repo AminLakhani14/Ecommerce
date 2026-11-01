@@ -21,8 +21,9 @@ const Footer = () => {
           </Col>
           <Col md={4} className="mb-3">
             <h5>Contact Info</h5>
-            <p><i className="fas fa-envelope me-2"></i><a href='mailto:support@sbrfashion.com'>support@sbrfashion.com</a></p>
-            <p><i className="fas fa-phone me-2"></i><a href='tel:+923001234567'>+92 300 1234567</a></p>
+            <p>LA Downtown</p>
+            <p><i className="fas fa-envelope me-2"></i><a href='mailto:fashionsbr3@gmail.com'>fashionsbr3@gmail.com</a></p>
+            <p><i className="fas fa-phone me-2"></i><a href='tel:+13102272015'>+1 (310) 227-2015</a></p>
           </Col>
         </Row>
         <Row>

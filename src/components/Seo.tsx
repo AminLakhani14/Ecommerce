@@ -43,7 +43,8 @@ export default function Seo() {
   const indexable = Boolean(pages[path] || category || filtered || productMatch);
   const data: Record<string, unknown>[] = path === '/' ? [
     { '@context': 'https://schema.org', '@type': 'WebSite', name: 'SBR Fashion', alternateName: 'sbrfashion', url: origin + '/' },
-    { '@context': 'https://schema.org', '@type': 'Organization', name: 'SBR Fashion', url: origin + '/', logo: origin + '/sbrfashion-logo.svg' },
+    { '@context': 'https://schema.org', '@type': 'Organization', name: 'SBR Fashion', url: origin + '/', logo: origin + '/sbrfashion-logo.svg',
+      email: 'fashionsbr3@gmail.com', telephone: '+13102272015', location: { '@type': 'Place', name: 'LA Downtown' } },
   ] : [];
   if (indexable && path !== '/') data.push({
     '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [

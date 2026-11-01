@@ -32,4 +32,5 @@ so React can update it without leaving tags from previous routes behind.
 
 Search Console was intentionally not configured as part of the website-only SEO
 request. Indexing and search position are controlled by Google, not deployment.
-The existing contact details and unfinished FAQ copy need business-owner review.
+Contact details use the owner's supplied LA Downtown location, phone and email.
+The unfinished FAQ copy still needs business-owner review.

@@ -13,15 +13,15 @@ const ContactPage = () => {
               <hr/>
               <div className="d-flex align-items-center my-3">
                 <FaMapMarkerAlt size={24} className="me-3 text-primary" />
-                <span>123 Fashion Ave, Karachi, Pakistan</span>
+                <span>LA Downtown</span>
               </div>
               <div className="d-flex align-items-center my-3">
                 <FaPhone size={24} className="me-3 text-primary" />
-                <span>+92 300 1234567</span>
+                <a href='tel:+13102272015'>+1 (310) 227-2015</a>
               </div>
               <div className="d-flex align-items-center my-3">
                 <FaEnvelope size={24} className="me-3 text-primary" />
-                <span>support@sbrfashion.com</span>
+                <a href='mailto:fashionsbr3@gmail.com'>fashionsbr3@gmail.com</a>
               </div>
             </Card.Body>
           </Card>
