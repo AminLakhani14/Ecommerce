@@ -62,7 +62,7 @@ export default function FAQPage() {
   return (
     <div className="d-flex flex-column min-vh-100">
       <div className="text-center py-5 mt-5 ">
-        <h2 className="fw-bold mt-5 pt-5 recentLaunchHeading">FAQ</h2>
+        <h1 className="fw-bold mt-5 pt-5 recentLaunchHeading">SBR Fashion FAQs</h1>
         <p className="text-muted ">Your Questions Answered Here</p>
       </div>
 

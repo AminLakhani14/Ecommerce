@@ -203,7 +203,7 @@ const ProductPage = () => {
               )}
               <div className={styles.mainImage}>
                 {product.isOnSale && <span className={styles.saleBadge}>Sale</span>}
-                <img src={productImageUrl(mainImage)} alt={product.name} />
+                <img src={productImageUrl(mainImage || product.image)} alt={product.name} />
               </div>
             </div>
 

@@ -4,7 +4,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { updateCart } from '../../utils/cartUtils';
 import { getPricing } from '../../utils/pricing';
 
-const initialState: CartState = localStorage.getItem('cart')
+const initialState: CartState = typeof localStorage !== 'undefined' && localStorage.getItem('cart')
   ? JSON.parse(localStorage.getItem('cart')!)
   : { cartItems: [], shippingAddress: {}, itemsPrice: 0, shippingPrice: 0, taxPrice: 0, totalPrice: '0.00' };
 

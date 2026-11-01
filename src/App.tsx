@@ -6,12 +6,14 @@ import AdminShell from './layouts/AdminShell';
 import { SiteBreadcrumbs } from './components/Breadcrumbs';
 import ScrollToTop from './components/ScrollToTop';
 import './index.css';
+import Seo from './components/Seo';
 
 const App = () => {
   const { pathname } = useLocation();
-  if (pathname.startsWith('/admin/')) return <><ScrollToTop /><AdminShell><Outlet /></AdminShell></>;
+  if (pathname.startsWith('/admin/')) return <><Seo /><ScrollToTop /><AdminShell><Outlet /></AdminShell></>;
   return (
     <div className={`d-flex flex-column min-vh-100${pathname === '/' ? ' home-layout' : ''}`}>
+      <Seo />
       <ScrollToTop />
       <Header />
       <SiteBreadcrumbs />

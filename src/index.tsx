@@ -71,6 +71,9 @@ const router = createBrowserRouter(
   )
 );
 
+// The initial HTML contains prerendered metadata. Give React ownership of it so
+// navigating between pages cannot leave an old title, canonical or product schema behind.
+document.head.querySelectorAll('title, meta[name="description"], meta[name="robots"], meta[property^="og:"], meta[name^="twitter:"], link[rel="canonical"], script[type="application/ld+json"]').forEach(element => element.remove());
 const root = ReactDOM.createRoot(document.getElementById('root')!);
 root.render(
   <React.StrictMode>

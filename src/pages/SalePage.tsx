@@ -8,7 +8,7 @@ import Message from '../components/Message';
 
 const SalePage = () => {
   const { data: saleProducts, isLoading, error } = useGetSaleProductsQuery();
-  const [filteredProducts, setFilteredProducts] = useState<import('../types').Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<import('../types').Product[]>(saleProducts || []);
 
   useEffect(() => {
     if (saleProducts) {

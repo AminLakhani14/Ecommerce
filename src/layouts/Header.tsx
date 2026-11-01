@@ -16,7 +16,7 @@ import { megaMenuData } from '../data/menuData';
 const Header = () => {
   const { pathname } = useLocation();
   const headerRef = useRef<HTMLElement>(null);
-  const [scrolled, setScrolled] = useState(window.scrollY > 24);
+  const [scrolled, setScrolled] = useState(typeof window !== 'undefined' && window.scrollY > 24);
 
   useEffect(() => {
     const updateScroll = () => setScrolled(window.scrollY > 24);
@@ -49,7 +49,7 @@ const Header = () => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [expanded, setExpanded] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [isDesktop, setDesktop] = useState(window.innerWidth >= 1200);
+  const [isDesktop, setDesktop] = useState(typeof window !== 'undefined' && window.innerWidth >= 1200);
 
   const updateMedia = () => {
     setDesktop(window.innerWidth >= 1200);

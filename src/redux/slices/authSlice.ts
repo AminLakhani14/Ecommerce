@@ -3,7 +3,7 @@ import type { UserInfo } from '../../types';
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState: { userInfo: UserInfo | null } = {
-  userInfo: localStorage.getItem('userInfo')
+  userInfo: typeof localStorage !== 'undefined' && localStorage.getItem('userInfo')
     ? JSON.parse(localStorage.getItem('userInfo')!)
     : null,
 };

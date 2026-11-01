@@ -3,7 +3,7 @@ import { FiArrowUpRight } from 'react-icons/fi';
 import styles from '../pages/styles/Hero.module.css';
 
 const Hero = () => <section className={styles.videoHero} aria-label='The everyday edit'>
-  <h1 className='visually-hidden'>Good style. Great finds. Shop bags, accessories, T-shirts and jeans.</h1>
+  <h1 className='visually-hidden'>SBR Fashion – Clothing, Accessories and Backpacks</h1>
   <video
     className={styles.promoVideo}
     autoPlay
